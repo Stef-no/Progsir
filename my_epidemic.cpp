@@ -6,26 +6,27 @@
 
 
 int main() {
+/*
     int Pop, Inf, Dead, Heal, Duration, Imm, VaxStart, VaxMax, NewSusc;
     double Beta, Gamma, HealIndex, VaxIndex;  // so che Giacomini non apprezza
     char Previous;
-
-    Pop = 1000000;
-    Inf = 100;
-    Dead = 0;
+    
+    Pop = 1012;
+    Inf = 10;
+    Dead = 2;
     Heal = 0;
-    Beta = 0.2;
+    Beta = 0.3;
     Gamma = 0.05;
-    HealIndex = 0.94;
-    Duration = 520;
-    Imm = 250; // tempo di guarigione
-    VaxStart = 350; // quando iniziano i vaccini
-    Previous = 'n'; // pandemia già in corso?
-    VaxIndex = 0.01;
-    VaxMax = 200;
+    HealIndex = 0.5;
+    Duration = 10;
+    Imm = 0; // tempo di guarigione
+    VaxStart = 0; // quando iniziano i vaccini
+    Previous = 'y'; // pandemia già in corso?
+    VaxIndex = 0.3;
+    VaxMax = 0;
     NewSusc = 0;
-
-/*  
+*/
+  
     std::cout << "Inserire \n";
     int Pop;
     std::cout << "Popolazione totale:\t";
@@ -60,7 +61,7 @@ int main() {
     }
 
     double HealIndex;
-    std::cout << "Indice di guarigiosità:\t";
+    std::cout << "Indice di guarigione:\t";
     std::cin >> HealIndex;
     while ( HealIndex < 0 || HealIndex > 1 ) {
         std::cout << " HealIndex's value has to be between 0 and 1.\n ";
@@ -115,86 +116,128 @@ int main() {
         std::cin >> Previous;
     }
 
-    int Dead;
-    int Heal;
+    int PanStart;
     if ( Previous == 'Y' || Previous == 'y') {
-        std::cout << " Dead = ";
+        std::cout << " Da quanti giorni? \t";
+        std::cin >> PanStart;
+        while ( PanStart < 0 ) {
+            std::cout << " PanStart has to be major than 0.\n ";
+            std::cin >> PanStart;
+        }
+    } else {
+        PanStart = 0;
+    } 
+
+
+    int Dead;
+    if ( Previous == 'Y' || Previous == 'y') {
+        std::cout << " Dead: \t";
         std::cin >> Dead;
         while ( Dead < 0 || Dead > Pop - Inf) {
             std::cout << " Dead has to be between 0 and Pop - Inf.\n ";
             std::cin >> Dead;
         }
-        std::cout << " Heal = ";
+    } else {
+        Dead = 0;
+    } 
+
+    int Heal;
+    if ( Previous == 'Y' || Previous == 'y') {
+        std::cout << " Heal: \t";
         std::cin >> Heal;
         while ( Heal < 0 || Heal > Pop - Inf - Dead) {
             std::cout << " Heal has to be between 0 and Pop - Inf - Dead.\n ";
             std::cin >> Heal;
         }
     } else {
-        Dead = 0;
         Heal = 0;
     } 
     
     int NewSusc = 0;
-*/
+
+    char View;
+    std::cout << "Vuoi vedere tutti i giorni in stampa?\t";
+    std::cin >> View;
+    while ( View != 'N' && View != 'Y' && View != 'n' && View != 'y' ) {
+        std::cout << " View has to be Y/n.\n ";
+        std::cin >> View;
+    }
    
-    PandemicData initial_state  {Pop - Inf - Dead - Heal, Inf, Dead, Heal, Dead + Heal, Imm, VaxStart, VaxMax, 
-                        NewSusc, Beta, Gamma, HealIndex, VaxIndex, Previous};  // aggiungere c
+    PandemicData initial_state  {Pop - Inf - Dead - Heal, Inf, Dead, Heal, Dead + Heal, Imm, PanStart, VaxStart, 
+                                 VaxMax, NewSusc, Beta, Gamma, HealIndex, VaxIndex, Previous};  // aggiungere c
     Contagion epidemic{initial_state};
     std::vector<PandemicData> data = epidemic.generate_data(Duration - 1);
     int d = 0;
-    std::cout << '\n' << std::setw(12) << "Giorno   " << "|" << std::setw(12) << "Suscettibili" << "|" 
-              << std::setw(12) << "Infetti  " << "|" << std::setw(12) << "Rimossi  " << "|" 
-              << std::setw(12) << "Guariti  " << "|" << std::setw(12) << "Morti   " << "|"
-              << std::setw(12) << "Guarigione " << "|" << std::setw(12) << "Popolation " << "|\n"
-              << "--------------------------------------------------------------------------------------------------------" << '\n';
+    std::cout << '\n' << std::setw(9) << "Giorno  " << "|" << std::setw(12) << "Suscettibili" << "|" 
+              << std::setw(12) << "Infetti  " << "|" << std::setw(12) << "Morti   " << "|"
+              << std::setw(12) << "Guariti  " << "|" << std::setw(12) << "Rimossi  " << "|" 
+              << std::setw(12) << "NewSusc  " << "|" << std::setw(12) << "Infettività " << "|" 
+              << std::setw(12) << "Rimozione  " << "|" << std::setw(12) << "Guarigione " << "|" 
+              << std::setw(12) << "Vaccinazione" << "|" << std::setw(12) << "Popolation " << "|\n"
+              << "---------------------------------------------------------------------------------------------------------------------------------------------------------" << '\n';
 
-    char a = ' ';
-    if (Duration <= 150) {
-        a = 'x';
-    } else if (Duration <= 500) {
-        a = 'y';
-    } else {
-        a = 'z';
-    }
-
-    std::cout.precision(3);
-
-    switch (a) {
-        case 'x':
-            while (d < Duration+1) {
-                control_print   ( d, data[d].Susc_, data[d].Inf_, data[d].Recov_, data[d].Heal_, data[d].Dead_,
-                                 data[d].HealIndex_, Pop ); 
+    if ( View == 'Y' || View == 'y') {
+        while (d < Duration+1) {
+                control_print   ( d, data[d].Susc_, data[d].Inf_, data[d].Dead_, data[d].Heal_, data[d].Rec_,
+                                  data[d].NewSusc_, data[d].Beta_,  data[d].Gamma_, data[d].HealIndex_,
+                                  data[d].VaxIndex_, Pop ); 
                 ++d;
             }
-            break;
+    } else if ( View == 'N' || View == 'n') {
+        char a = ' ';
+        if (Duration <= 150) {
+            a = 'x';
+        } else if (Duration <= 500) {
+            a = 'y';
+        } else {
+            a = 'z';
+        }
 
-        case 'y':
-            while (d < Duration+1) {
-                control_print   ( d, data[d].Susc_, data[d].Inf_, data[d].Recov_, data[d].Heal_, data[d].Dead_,
-                                data[d].HealIndex_, Pop );
-                d += 10;
-                if (d > Duration && d != Duration + 10) {
-                    control_print   ( Duration, data[Duration].Susc_, data[Duration].Inf_, data[Duration].Recov_,
-                                    data[Duration].Heal_, data[Duration].Dead_, data[Duration].HealIndex_, Pop );
-                }
-            }
-            break;
+        std::cout.precision(3);
 
-        case 'z':
-            while (d < Duration+1) {
-                control_print   ( d, data[d].Susc_, data[d].Inf_, data[d].Recov_, data[d].Heal_, data[d].Dead_,
-                                data[d].HealIndex_, Pop );
-                d += 20;
-                if (d > Duration && d != Duration + 20 ) {
-                    control_print   ( Duration, data[Duration].Susc_, data[Duration].Inf_, data[Duration].Recov_,
-                                    data[Duration].Heal_, data[Duration].Dead_, data[Duration].HealIndex_, Pop );
+        switch (a) {
+            case 'x':
+                while (d < Duration+1) {
+                    control_print   ( d, data[d].Susc_, data[d].Inf_, data[d].Dead_, data[d].Heal_, data[d].Rec_,
+                                      data[d].NewSusc_, data[d].Beta_, data[d].Gamma_, data[d].HealIndex_,
+                                      data[d].VaxIndex_, Pop ); 
+                    ++d;
                 }
-            }
-            break;
+                break;
+
+            case 'y':
+                while (d < Duration+1) {
+                    control_print   ( d, data[d].Susc_, data[d].Inf_, data[d].Dead_, data[d].Heal_, data[d].Rec_,
+                                      data[d].NewSusc_, data[d].Beta_, data[d].Gamma_, data[d].HealIndex_, 
+                                      data[d].VaxIndex_, Pop );;
+                    d += 10;
+                    if (d > Duration && d != Duration + 10) {
+                        control_print   ( Duration, data[Duration].Susc_, data[Duration].Inf_, data[Duration].Dead_, 
+                                          data[Duration].Heal_, data[Duration].Rec_, data[Duration].NewSusc_, 
+                                          data[Duration].Beta_,  data[Duration].Gamma_, data[Duration].HealIndex_,
+                                          data[Duration].VaxIndex_, Pop );
+                    }
+                }
+                break;
+
+            case 'z':
+                while (d < Duration+1) {
+                    control_print   ( d, data[d].Susc_, data[d].Inf_, data[d].Dead_, data[d].Heal_, data[d].Rec_,
+                                      data[d].NewSusc_, data[d].Beta_,  data[d].Gamma_, data[d].HealIndex_, 
+                                      data[d].VaxIndex_, Pop );
+                    d += 20;
+                    if (d > Duration && d != Duration + 20 ) {
+                        control_print   ( Duration, data[Duration].Susc_, data[Duration].Inf_, data[Duration].Dead_, 
+                                          data[Duration].Heal_, data[Duration].Rec_, data[Duration].NewSusc_, 
+                                          data[Duration].Beta_,  data[Duration].Gamma_, data[Duration].HealIndex_,
+                                          data[Duration].VaxIndex_, Pop );
+                    }
+                }
+                break;
+        }
     }
-
-    std::cout << "--------------------------------------------------------------------------------------------------------\n";
+    
+    std::cout << "---------------------------------------------------------------------------------------------------------------------------------------------------------\n";
 
     now = time(0) + ConvToSec(Duration);
     tm *ldt = localtime(&now);
