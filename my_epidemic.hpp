@@ -9,9 +9,21 @@
 //cambiare if riga 47 di Previous 's' con y e n  e cambiare funzione di aumento healindex 
 
 struct PandemicData {                      
-    int Susc_, Inf_, Dead_, Heal_, Rec_, Imm_, PanStart_, VaxStart_, VaxMax_, NewSusc_;  
-    double Beta_, Gamma_, HealIndex_, VaxIndex_;          
-    char Previous_;                         
+    int Susc;
+    int Inf;
+    int Dead;
+    int Heal;
+    int Rec;
+    int Imm;
+    int PanStart;
+    int VaxStart;
+    int VaxMax;
+    int NewSusc;  
+    double Beta;
+    double Gamma;
+    double HealIndex;
+    double VaxIndex;          
+    char Previous;                         
 };
 
 bool operator== ( PandemicData, PandemicData) { 
@@ -53,63 +65,63 @@ class Contagion {
     Contagion(PandemicData& initial_state) : newstate{initial_state} {}
 
     std::vector<PandemicData> generate_data(int Duration_) {
-        //int Const = std::round(25 * tan(M_PI * (newstate.HealIndex_ - 0.5)));
-        int hd = std::round (50 * exp( -2 * newstate.Beta_ ) + 30); //giorno di aumento dell'indice di guarigione
+        //int Const = std::round(25 * tan(M_PI * (newstate.HealIndex - 0.5)));
+        int hd = std::round (50 * exp( -2.0 * newstate.Beta ) + 30); //giorno di aumento dell'indice di guarigione
         std::vector<PandemicData> result{newstate};
         PandemicData state = result.back();
 
         for (int i = 0; i <= Duration_; ++i) {
-            int Pop_ = newstate.Susc_ + newstate.Inf_ + newstate.Dead_ + newstate.Heal_;
-            int NewRec_ = std::round(newstate.Gamma_ * state.Inf_);
-            int NewInf_ = std::round(newstate.Beta_ / Pop_ * state.Susc_ * state.Inf_);
-            int NewHeal_ = std::round(NewRec_ * newstate.HealIndex_);  // l è la gente che guarisce.
+            int Pop_ = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
+            int NewRec = std::round(newstate.Gamma * state.Inf);
+            int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
+            int NewHeal = std::round(NewRec * newstate.HealIndex);  // l è la gente che guarisce.
 
-            if ( newstate.Previous_ == 'Y' || newstate.Previous_ == 'y' ) {           // se la pandemia è già in corso
-                if (i > hd - newstate.PanStart_) {  // si può modificare. Forse mettere fuori come int
+            if ( newstate.Previous == 'Y' || newstate.Previous == 'y' ) {           // se la pandemia è già in corso
+                if (i > hd - newstate.PanStart) {  // si può modificare. Forse mettere fuori come int
                     // deve essere inv prop a beta
-                    //state.HealIndex_ = ((atan((i + Const) / 50)) / M_PI) + 0.5;
-                    int eY =  ((i - hd + newstate.PanStart_));
+                    //state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
+                    int eY =  ((i - hd + newstate.PanStart));
                     double exponentialY = std::exp(-eY/260.0);
-                    state.HealIndex_ = (( 1 - result[0].HealIndex_ ) * ( 1 - exponentialY) + result[0].HealIndex_ );
+                    state.HealIndex = (( 1 - result[0].HealIndex ) * ( 1 - exponentialY) + result[0].HealIndex );
                 } else {
-                    state.HealIndex_ = newstate.HealIndex_;
+                    state.HealIndex = newstate.HealIndex;
                 }
-            } else if ( newstate.Previous_ == 'N' || newstate.Previous_ == 'n' ) {
-                //state.HealIndex_ = ((atan((i + Const) / 50)) / M_PI) + 0.5;
+            } else if ( newstate.Previous == 'N' || newstate.Previous == 'n' ) {
+                //state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
                 if (i > hd) {  // si può modificare. Forse mettere fuori come int
                     // deve essere inv prop a beta
-                    //state.HealIndex_ = ((atan((i + Const) / 50)) / M_PI) + 0.5;
+                    //state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
                     int eN =  ((i - hd));
                     double exponentialN = std::exp(-eN/260.0);
-                    state.HealIndex_ = (( 1 - result[0].HealIndex_ ) * ( 1 - exponentialN) + result[0].HealIndex_ );
+                    state.HealIndex = (( 1 - result[0].HealIndex ) * ( 1 - exponentialN) + result[0].HealIndex );
                 } else {
-                    state.HealIndex_ = newstate.HealIndex_;
+                    state.HealIndex = newstate.HealIndex;
                 }
             };
 
             // da inizializzare fuori per farlo inserire all'utente
-            if (i > newstate.Imm_) {  // il giorno 1 erano 0 i guariti, perciò sarebbe inutile
-                int j = i - newstate.Imm_;
-                newstate.NewSusc_ = result[j].Heal_ - result[j - 1].Heal_ + result[j].NewSusc_;  // diventa state.h
+            if (i > newstate.Imm) {  // il giorno 1 erano 0 i guariti, perciò sarebbe inutile
+                int j = i - newstate.Imm;
+                newstate.NewSusc = result[j].Heal - result[j - 1].Heal + result[j].NewSusc;  // diventa state.h
             }
 
             int NewVax_ = 0;
-            if (state.Inf_ > Pop_ * 0.001) {
-                if (newstate.VaxStart_ <= i && newstate.VaxStart_ + newstate.VaxMax_ > i) {
-                    NewVax_ = (state.Susc_ + newstate.NewSusc_ - NewInf_) * newstate.VaxIndex_ * ((i - newstate.VaxStart_ + 1) / newstate.VaxMax_);
-                } else if (newstate.VaxStart_ + newstate.VaxMax_ <= i) {
-                    NewVax_ = (state.Susc_ + newstate.NewSusc_ - NewVax_) * newstate.VaxIndex_;
+            if (state.Inf > Pop_ * 0.001) {
+                if (newstate.VaxStart <= i && newstate.VaxStart + newstate.VaxMax > i) {
+                    NewVax_ = (state.Susc + newstate.NewSusc - NewInf) * newstate.VaxIndex * ((i - newstate.VaxStart + 1) / newstate.VaxMax);
+                } else if (newstate.VaxStart + newstate.VaxMax <= i) {
+                    NewVax_ = (state.Susc + newstate.NewSusc - NewVax_) * newstate.VaxIndex;
                 }
             } else {
                 NewVax_ = 0;
             }
 
-            state.Susc_ += newstate.NewSusc_ - NewInf_ - NewVax_;
-            state.Inf_ += NewInf_ - NewRec_;
-            state.Rec_ += NewRec_ + NewVax_ - newstate.NewSusc_;  // via. è da eliminare.
-            state.Dead_ += NewRec_ - NewHeal_;         // l è una frazione di k, quindi sempre minore. Io (Stefano) so cosa intendo.
-            state.Heal_ += NewHeal_ + NewVax_ - newstate.NewSusc_;
-            state.NewSusc_ = newstate.NewSusc_;
+            state.Susc += newstate.NewSusc - NewInf - NewVax_;
+            state.Inf += NewInf - NewRec;
+            state.Rec += NewRec + NewVax_ - newstate.NewSusc;  // via. è da eliminare.
+            state.Dead += NewRec - NewHeal;         // l è una frazione di k, quindi sempre minore. Io (Stefano) so cosa intendo.
+            state.Heal += NewHeal + NewVax_ - newstate.NewSusc;
+            state.NewSusc = newstate.NewSusc;
 
             result.push_back(state); //vengono immagazzinati tutti i valori di state giorno per giorno
         }

@@ -4,23 +4,23 @@
 #include <vector>
 
 TEST_CASE("Testing struct PandemicData") {
-    PandemicData test_pd = {1000, 10, 5, 3, 2, 100, 50, 200, 0, 0, 0.5, 0.8, 0.5, 0, 'y'};
+    PandemicData test_pd = {1000, 10, 5, 3, 2, 100, 50, 200, 0, 0, 0.5, 0.8, 0.5, 0.1, 'y'};
 
-    CHECK(test_pd.Susc_ == 1000);
-    CHECK(test_pd.Inf_ == 10);
-    CHECK(test_pd.Dead_ == 5);
-    CHECK(test_pd.Heal_ == 3);
-    CHECK(test_pd.Rec_ == 2);
-    CHECK(test_pd.Imm_ == 100);
-    CHECK(test_pd.PanStart_ == 50);
-    CHECK(test_pd.VaxStart_ == 200);
-    CHECK(test_pd.VaxMax_ == 0);
-    CHECK(test_pd.NewSusc_ == 0);
-    CHECK(test_pd.Beta_ == 0.5);
-    CHECK(test_pd.Gamma_ == 0.8);
-    CHECK(test_pd.HealIndex_ == 0.5);
-    CHECK(test_pd.VaxIndex_ == 0.0);
-    CHECK(test_pd.Previous_ == 'y');
+    CHECK(test_pd.Susc == 1000);
+    CHECK(test_pd.Inf == 10);
+    CHECK(test_pd.Dead == 5);
+    CHECK(test_pd.Heal == 3);
+    CHECK(test_pd.Rec == 2);
+    CHECK(test_pd.Imm == 100);
+    CHECK(test_pd.PanStart == 50);
+    CHECK(test_pd.VaxStart == 200);
+    CHECK(test_pd.VaxMax == 0);
+    CHECK(test_pd.NewSusc == 0);
+    CHECK(test_pd.Beta == 0.5);
+    CHECK(test_pd.Gamma == 0.8);
+    CHECK(test_pd.HealIndex == 0.5);
+    CHECK(test_pd.VaxIndex == 0.1);
+    CHECK(test_pd.Previous == 'y');
 }
 
 TEST_CASE("Contagion generate_data returns the expected results") {
