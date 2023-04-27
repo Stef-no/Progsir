@@ -23,12 +23,27 @@ struct PandemicData {
     double Gamma;
     double HealIndex;
     double VaxIndex;          
-    char Previous;                         
+    //char Previous;                         
 };
 
-bool operator== ( PandemicData, PandemicData) { 
-    return true;
-    } 
+bool operator== ( const std::vector<PandemicData> a, const std::vector<PandemicData> b) { 
+    bool res = true;
+    int i=0;
+    for(auto it = a.begin(), end = a.end(); it!=end;it++){ 
+        if( it->Susc==b[i].Susc && it->Inf==b[i].Inf && it->Dead==b[i].Dead && it->Heal==b[i].Heal &&
+            it->Rec==b[i].Rec && it->Imm==b[i].Imm && it->PanStart==b[i].PanStart && 
+            it->VaxStart==b[i].VaxStart && it->VaxMax==b[i].VaxMax && it->NewSusc==b[i].NewSusc && 
+            it->Beta==b[i].Beta && it->Gamma==b[i].Gamma && it->HealIndex==b[i].HealIndex && 
+            it->VaxIndex==b[i].VaxIndex) {
+        res = true;
+        }
+        else {
+            return false;
+        }
+        i++;
+    }//guardare iteratori e for particolare più veloce 
+    return res;
+} 
 
 void control_print ( int day, int susc, int inf, int dead, int heal, int rec, int newsusc,
                      double beta, double gamma, double healindex, double vaxindex, int pop ) {
@@ -60,9 +75,10 @@ void control_print ( int day, int susc, int inf, int dead, int heal, int rec, in
 class Contagion {
    private:
     PandemicData newstate;
+    char Previous;
 
    public:
-    Contagion(PandemicData& initial_state) : newstate{initial_state} {}
+    Contagion(PandemicData& initial_state,char p) : newstate{initial_state},Previous {p}{}
 
     std::vector<PandemicData> generate_data(int Duration_) {
         //int Const = std::round(25 * tan(M_PI * (newstate.HealIndex - 0.5)));
@@ -76,7 +92,7 @@ class Contagion {
             int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
             int NewHeal = std::round(NewRec * newstate.HealIndex);  // l è la gente che guarisce.
 
-            if ( newstate.Previous == 'Y' || newstate.Previous == 'y' ) {           // se la pandemia è già in corso
+            if ( Previous == 'Y' || Previous == 'y' ) {           // se la pandemia è già in corso
                 if (i > hd - newstate.PanStart) {  // si può modificare. Forse mettere fuori come int
                     // deve essere inv prop a beta
                     //state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
@@ -86,7 +102,7 @@ class Contagion {
                 } else {
                     state.HealIndex = newstate.HealIndex;
                 }
-            } else if ( newstate.Previous == 'N' || newstate.Previous == 'n' ) {
+            } else if ( Previous == 'N' || Previous == 'n' ) {
                 //state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
                 if (i > hd) {  // si può modificare. Forse mettere fuori come int
                     // deve essere inv prop a beta

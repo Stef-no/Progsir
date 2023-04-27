@@ -6,27 +6,29 @@
 
 
 int main() {
-/*
-    int Pop_, Inf_, Dead_, Heal_, Duration_, Imm_, VaxStart_, VaxMax_, NewSusc_;
+
+    int Pop_, Inf_, Dead_, Heal_, Duration_, Imm_, PanStart_, VaxStart_, VaxMax_, NewSusc_;
     double Beta_, Gamma_, HealIndex_, VaxIndex_;  // so che Giacomini non apprezza
     char Previous_;
     
-    Pop_ = 1012;
+    Pop_ = 1010;
     Inf_ = 10;
-    Dead_ = 2;
+    Dead_ = 0;
     Heal_ = 0;
     Beta_ = 0.3;
     Gamma_ = 0.05;
     HealIndex_ = 0.5;
     Duration_ = 10;
-    Imm_ = 0; // tempo di guarigione
-    VaxStart_ = 0; // quando iniziano i vaccini
-    Previous_ = 'y'; // pandemia già in corso?
+    Imm_ = 1; // tempo di guarigione
+    PanStart_ = 0;
+    VaxStart_ = 1; // quando iniziano i vaccini
+    Previous_ = 'n'; // pandemia già in corso?
     VaxIndex_ = 0.3;
-    VaxMax_ = 0;
+    VaxMax_ = 1;
     NewSusc_ = 0;
-*/
-  
+    char View_ = 'y';
+
+  /*
     std::cout << "Inserire \n";
     int Pop_;
     std::cout << "Popolazione totale:\t";
@@ -162,10 +164,11 @@ int main() {
         std::cout << " View has to be Y/n.\n ";
         std::cin >> View_;
     }
+    */
    
     PandemicData initial_state  {Pop_ - Inf_ - Dead_ - Heal_, Inf_, Dead_, Heal_, Dead_ + Heal_, Imm_, PanStart_, VaxStart_, 
-                                 VaxMax_, NewSusc_, Beta_, Gamma_, HealIndex_, VaxIndex_, Previous_};  // aggiungere c
-    Contagion epidemic{initial_state};
+                                 VaxMax_, NewSusc_, Beta_, Gamma_, HealIndex_, VaxIndex_};  // aggiungere c
+    Contagion epidemic{initial_state,Previous_};
     std::vector<PandemicData> data = epidemic.generate_data(Duration_ - 1);
     int d = 0;
     std::cout << '\n' << std::setw(9) << "Giorno  " << "|" << std::setw(12) << "Suscettibili" << "|" 
