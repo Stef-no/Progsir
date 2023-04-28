@@ -86,7 +86,7 @@ class Contagion {
         std::vector<PandemicData> result{newstate};
         PandemicData state = result.back();
 
-        for (int i = 0; i <= Duration_; ++i) {
+        for (int i = 0; i < Duration_; ++i) {
             int Pop_ = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
             int NewRec = std::round(newstate.Gamma * state.Inf);
             int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);

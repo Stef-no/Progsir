@@ -169,7 +169,7 @@ int main() {
     PandemicData initial_state  {Pop_ - Inf_ - Dead_ - Heal_, Inf_, Dead_, Heal_, Dead_ + Heal_, Imm_, PanStart_, VaxStart_, 
                                  VaxMax_, NewSusc_, Beta_, Gamma_, HealIndex_, VaxIndex_};  // aggiungere c
     Contagion epidemic{initial_state,Previous_};
-    std::vector<PandemicData> data = epidemic.generate_data(Duration_ - 1);
+    std::vector<PandemicData> data = epidemic.generate_data(Duration_);
     int d = 0;
     std::cout << '\n' << std::setw(9) << "Giorno  " << "|" << std::setw(12) << "Suscettibili" << "|" 
               << std::setw(12) << "Infetti  " << "|" << std::setw(12) << "Morti   " << "|"
@@ -180,7 +180,7 @@ int main() {
               << "---------------------------------------------------------------------------------------------------------------------------------------------------------" << '\n';
 
     if ( View_ == 'Y' || View_ == 'y') {
-        while (d < Duration_+1) {
+        while (d <= Duration_) {
                 control_print   ( d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal, data[d].Rec,
                                   data[d].NewSusc, data[d].Beta,  data[d].Gamma, data[d].HealIndex,
                                   data[d].VaxIndex, Pop_ ); 
@@ -200,7 +200,7 @@ int main() {
 
         switch (a) {
             case 'x':
-                while (d < Duration_+1) {
+                while (d <= Duration_) {
                     control_print   ( d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal, data[d].Rec,
                                       data[d].NewSusc, data[d].Beta,  data[d].Gamma, data[d].HealIndex, 
                                       data[d].VaxIndex, Pop_ ); 
@@ -209,7 +209,7 @@ int main() {
                 break;
 
             case 'y':
-                while (d < Duration_+1) {
+                while (d <= Duration_) {
                     control_print   ( d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal, data[d].Rec,
                                       data[d].NewSusc, data[d].Beta,  data[d].Gamma, data[d].HealIndex, 
                                       data[d].VaxIndex, Pop_ );
@@ -224,7 +224,7 @@ int main() {
                 break;
 
             case 'z':
-                while (d < Duration_+1) {
+                while (d <= Duration_) {
                     control_print   ( d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal, data[d].Rec,
                                       data[d].NewSusc, data[d].Beta,  data[d].Gamma, data[d].HealIndex, 
                                       data[d].VaxIndex, Pop_ );
