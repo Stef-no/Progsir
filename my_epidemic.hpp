@@ -14,10 +14,10 @@ struct PandemicData {
     int Dead;
     int Heal;
     int Rec;
-    int Imm;
-    int PanStart;
-    int VaxStart;
-    int VaxMax;
+    //int ImmDur;
+    //int PanStart;
+    //int VaxStart;
+    //int VaxMax;
     int NewSusc;  
     double Beta;
     double Gamma;
@@ -31,8 +31,8 @@ bool operator== ( const std::vector<PandemicData> a, const std::vector<PandemicD
     int i=0;
     for(auto it = a.begin(), end = a.end(); it!=end;it++){ 
         if( it->Susc==b[i].Susc && it->Inf==b[i].Inf && it->Dead==b[i].Dead && it->Heal==b[i].Heal &&
-            it->Rec==b[i].Rec && it->Imm==b[i].Imm && it->PanStart==b[i].PanStart && 
-            it->VaxStart==b[i].VaxStart && it->VaxMax==b[i].VaxMax && it->NewSusc==b[i].NewSusc && 
+            /*it->Rec==b[i].Rec && it->ImmDur==b[i].ImmDur && it->PanStart==b[i].PanStart && 
+            it->VaxStart==b[i].VaxStart && it->VaxMax==b[i].VaxMax &&*/ it->NewSusc==b[i].NewSusc && 
             it->Beta==b[i].Beta && it->Gamma==b[i].Gamma && it->HealIndex==b[i].HealIndex && 
             it->VaxIndex==b[i].VaxIndex) {
         res = true;
@@ -75,10 +75,15 @@ void control_print ( int day, int susc, int inf, int dead, int heal, int rec, in
 class Contagion {
    private:
     PandemicData newstate;
+    int ImmDur;
+    int PanStart;
+    int VaxStart;
+    int VaxMax;
     char Previous;
 
    public:
-    Contagion(PandemicData& initial_state,char p) : newstate{initial_state},Previous {p}{}
+    Contagion(PandemicData& initial_state, int id, int ps, int vs, int vm, char p) : newstate{initial_state}, ImmDur{id}, PanStart{ps}, 
+                                                                                     VaxStart{vs}, VaxMax{vm}, Previous {p}{}
 
     std::vector<PandemicData> generate_data(int Duration_) {
         //int Const = std::round(25 * tan(M_PI * (newstate.HealIndex - 0.5)));
@@ -93,10 +98,10 @@ class Contagion {
             int NewHeal = std::round(NewRec * newstate.HealIndex);  // l è la gente che guarisce.
 
             if ( Previous == 'Y' || Previous == 'y' ) {           // se la pandemia è già in corso
-                if (i > hd - newstate.PanStart) {  // si può modificare. Forse mettere fuori come int
+                if (i > hd - PanStart) {  // si può modificare. Forse mettere fuori come int
                     // deve essere inv prop a beta
                     //state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
-                    int eY =  ((i - hd + newstate.PanStart));
+                    int eY =  ((i - hd + PanStart));
                     double exponentialY = std::exp(-eY/260.0);
                     state.HealIndex = (( 1 - result[0].HealIndex ) * ( 1 - exponentialY) + result[0].HealIndex );
                 } else {
@@ -116,16 +121,16 @@ class Contagion {
             };
 
             // da inizializzare fuori per farlo inserire all'utente
-            if (i > newstate.Imm) {  // il giorno 1 erano 0 i guariti, perciò sarebbe inutile
-                int j = i - newstate.Imm;
+            if (i > ImmDur) {  // il giorno 1 erano 0 i guariti, perciò sarebbe inutile
+                int j = i - ImmDur;
                 newstate.NewSusc = result[j].Heal - result[j - 1].Heal + result[j].NewSusc;  // diventa state.h
             }
 
             int NewVax_ = 0;
             if (state.Inf > Pop_ * 0.001) {
-                if (newstate.VaxStart <= i && newstate.VaxStart + newstate.VaxMax > i) {
-                    NewVax_ = (state.Susc + newstate.NewSusc - NewInf) * newstate.VaxIndex * ((i - newstate.VaxStart + 1) / newstate.VaxMax);
-                } else if (newstate.VaxStart + newstate.VaxMax <= i) {
+                if (VaxStart <= i && VaxStart + VaxMax > i) {
+                    NewVax_ = (state.Susc + newstate.NewSusc - NewInf) * newstate.VaxIndex * ((i - VaxStart + 1) / VaxMax);
+                } else if (VaxStart + VaxMax <= i) {
                     NewVax_ = (state.Susc + newstate.NewSusc - NewVax_) * newstate.VaxIndex;
                 }
             } else {
