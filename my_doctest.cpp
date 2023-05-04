@@ -12,10 +12,6 @@ TEST_CASE("Testing struct PandemicData") {
   CHECK(test_pd.Dead == 5);
   CHECK(test_pd.Heal == 3);
   CHECK(test_pd.Rec == 2);
-  /*CHECK(test_pd.ImmDur == 100);
-  CHECK(test_pd.PanStart == 50);
-  CHECK(test_pd.VaxStart == 200);
-  CHECK(test_pd.VaxMax == 0);*/
   CHECK(test_pd.NewSusc == 0);
   CHECK(test_pd.Beta == 0.5);
   CHECK(test_pd.Gamma == 0.8);

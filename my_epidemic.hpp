@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
 // cambiare if riga 47 di Previous 's' con y e n  e cambiare funzione di aumento
 // healindex
@@ -15,16 +16,11 @@ struct PandemicData {
   int Dead;
   int Heal;
   int Rec;
-  // int ImmDur;
-  // int PanStart;
-  // int VaxStart;
-  // int VaxMax;
   int NewSusc;
   double Beta;
   double Gamma;
   double HealIndex;
   double VaxIndex;
-  // char Previous;
 };
 
 bool operator==(const std::vector<PandemicData> a,
@@ -33,11 +29,7 @@ bool operator==(const std::vector<PandemicData> a,
   int i = 0;
   for (auto it = a.begin(), end = a.end(); it != end; it++) {
     if (it->Susc == b[i].Susc && it->Inf == b[i].Inf && it->Dead == b[i].Dead &&
-        it->Heal == b[i].Heal &&
-        /*it->Rec==b[i].Rec && it->ImmDur==b[i].ImmDur &&
-        it->PanStart==b[i].PanStart && it->VaxStart==b[i].VaxStart &&
-        it->VaxMax==b[i].VaxMax &&*/
-            it->NewSusc == b[i].NewSusc &&
+        it->Heal == b[i].Heal && it->NewSusc == b[i].NewSusc &&
         it->Beta == b[i].Beta && it->Gamma == b[i].Gamma &&
         it->HealIndex == b[i].HealIndex && it->VaxIndex == b[i].VaxIndex) {
       res = true;
@@ -58,7 +50,6 @@ void control_print(int day, int susc, int inf, int dead, int heal, int rec,
   assert(dead >= 0 && dead <= pop);
   assert(heal >= 0 && heal <= pop);
   assert(newsusc >= 0 && newsusc <= pop);
-  assert(rec >= 0 && rec <= pop);
   assert(heal >= 0 && heal <= rec);
   assert(dead >= 0 && dead <= rec);
   assert(healindex >= 0 && healindex <= 1);
@@ -97,9 +88,7 @@ class Contagion {
         Previous{p} {}
 
   std::vector<PandemicData> generate_data(int Duration_) {
-    // int Const = std::round(25 * tan(M_PI * (newstate.HealIndex - 0.5)));
-    int hd = std::round(50 * exp(-2.0 * newstate.Beta) +
-                        30);  // giorno di aumento dell'indice di guarigione
+    int hd = std::round(50 * exp(-2.0 * newstate.Beta) + 30);
     std::vector<PandemicData> result{newstate};
     PandemicData state = result.back();
 
@@ -107,29 +96,22 @@ class Contagion {
       int Pop_ = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
       int NewRec = std::round(newstate.Gamma * state.Inf);
       int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
-      int NewHeal = std::round(
-          NewRec * newstate.HealIndex);  // l è la gente che guarisce.
+      int NewHeal = std::round(NewRec * newstate.HealIndex);
 
-      if (Previous == 'Y' ||
-          Previous == 'y') {  // se la pandemia è già in corso
-        if (i >
-            hd - PanStart) {  // si può modificare. Forse mettere fuori come int
+      if (Previous == 'Y' || Previous == 'y') {
+        if (i > hd - PanStart) {
           // deve essere inv prop a beta
-          // state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
-          int eY = ((i - hd + PanStart));
-          double exponentialY = std::exp(-eY / 260.0);
+          // int eY = ((i - hd + PanStart));
+          double exponentialY = std::exp(-(i - hd + PanStart) / 260.0);
           state.HealIndex = ((1 - result[0].HealIndex) * (1 - exponentialY) +
                              result[0].HealIndex);
         } else {
           state.HealIndex = newstate.HealIndex;
         }
       } else if (Previous == 'N' || Previous == 'n') {
-        // state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
-        if (i > hd) {  // si può modificare. Forse mettere fuori come int
-          // deve essere inv prop a beta
-          // state.HealIndex = ((atan((i + Const) / 50)) / M_PI) + 0.5;
-          int eN = ((i - hd));
-          double exponentialN = std::exp(-eN / 260.0);
+        if (i > hd) {
+          // int eN = ((i - hd));
+          double exponentialN = std::exp(-(i - hd) / 260.0);
           state.HealIndex = ((1 - result[0].HealIndex) * (1 - exponentialN) +
                              result[0].HealIndex);
         } else {
@@ -137,12 +119,10 @@ class Contagion {
         }
       };
 
-      // da inizializzare fuori per farlo inserire all'utente
-      if (i >
-          ImmDur) {  // il giorno 1 erano 0 i guariti, perciò sarebbe inutile
+      if (i > ImmDur) {  // giorno 1, 0 i guariti -> inutile
         int j = i - ImmDur;
-        newstate.NewSusc = result[j].Heal - result[j - 1].Heal +
-                           result[j].NewSusc;  // diventa state.h
+        newstate.NewSusc =
+            result[j].Heal - result[j - 1].Heal + result[j].NewSusc;
       }
 
       int NewVax_ = 0;
@@ -160,9 +140,8 @@ class Contagion {
 
       state.Susc += newstate.NewSusc - NewInf - NewVax_;
       state.Inf += NewInf - NewRec;
-      state.Rec += NewRec + NewVax_ - newstate.NewSusc;  // via. è da eliminare.
-      state.Dead += NewRec - NewHeal;  // l è una frazione di k, quindi sempre
-                                       // minore. Io (Stefano) so cosa intendo.
+      state.Rec += NewRec + NewVax_ - newstate.NewSusc; 
+      state.Dead += NewRec - NewHeal;
       state.Heal += NewHeal + NewVax_ - newstate.NewSusc;
       state.NewSusc = newstate.NewSusc;
 
