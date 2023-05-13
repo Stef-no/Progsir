@@ -8,7 +8,7 @@
 int main() {
   /*int Pop_, Inf_, Dead_, Heal_, Duration_, ImmDur_, PanStart_, VaxStart_,
       VaxMax_, NewSusc_;
-  double Beta_, Gamma_, HealIndex_, VaxIndex_;  // so che Giacomini non apprezza
+  double Beta_, Gamma_, DeadIndex_, VaxIndex_;  // so che Giacomini non apprezza
   char Previous_;
 
   Pop_ = 1010;
@@ -17,7 +17,7 @@ int main() {
   Heal_ = 0;
   Beta_ = 0.3;
   Gamma_ = 0.05;
-  HealIndex_ = 0.5;
+  DeadIndex_ = 0.5;
   Duration_ = 10;
   ImmDur_ = 1;  // tempo di guarigione
   PanStart_ = 0;
@@ -61,12 +61,12 @@ int main() {
     std::cin >> Gamma_;
   }
 
-  double HealIndex_;
-  std::cout << "Indice di guarigione:\t";
-  std::cin >> HealIndex_;
-  while (HealIndex_ < 0 || HealIndex_ > 1) {
-    std::cout << " HealIndex's value has to be between 0 and 1.\n ";
-    std::cin >> HealIndex_;
+  double DeadIndex_;
+  std::cout << "Indice di mortalità:\t";
+  std::cin >> DeadIndex_;
+  while (DeadIndex_ < 0 || DeadIndex_ > 1) {
+    std::cout << " DeadIndex's value has to be between 0 and 1.\n ";
+    std::cin >> DeadIndex_;
   }
 
   double VaxIndex_;
@@ -173,7 +173,7 @@ int main() {
                              NewSusc_,
                              Beta_,
                              Gamma_,
-                             HealIndex_,
+                             DeadIndex_,
                              VaxIndex_};
   Contagion epidemic{initial_state, ImmDur_, PanStart_,
                      VaxStart_,     VaxMax_, Previous_};
@@ -189,7 +189,7 @@ int main() {
             << "|" << std::setw(12) << "NewSusc  "
             << "|" << std::setw(12) << "Infettività "
             << "|" << std::setw(12) << "Rimozione  "
-            << "|" << std::setw(12) << "Guarigione "
+            << "|" << std::setw(12) << "Mortalità  "
             << "|" << std::setw(12) << "Vaccinazione"
             << "|" << std::setw(12) << "Popolation "
             << "|\n"
@@ -202,7 +202,7 @@ int main() {
     while (d <= Duration_) {
       control_print(d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal,
                     data[d].Rec, data[d].NewSusc, data[d].Beta, data[d].Gamma,
-                    data[d].HealIndex, data[d].VaxIndex, Pop_);
+                    data[d].DeadIndex, data[d].VaxIndex, Pop_);
       ++d;
     }
   } else if (View_ == 'N' || View_ == 'n') {
@@ -222,7 +222,7 @@ int main() {
         while (d <= Duration_) {
           control_print(d, data[d].Susc, data[d].Inf, data[d].Dead,
                         data[d].Heal, data[d].Rec, data[d].NewSusc,
-                        data[d].Beta, data[d].Gamma, data[d].HealIndex,
+                        data[d].Beta, data[d].Gamma, data[d].DeadIndex,
                         data[d].VaxIndex, Pop_);
           ++d;
         }
@@ -232,7 +232,7 @@ int main() {
         while (d <= Duration_) {
           control_print(d, data[d].Susc, data[d].Inf, data[d].Dead,
                         data[d].Heal, data[d].Rec, data[d].NewSusc,
-                        data[d].Beta, data[d].Gamma, data[d].HealIndex,
+                        data[d].Beta, data[d].Gamma, data[d].DeadIndex,
                         data[d].VaxIndex, Pop_);
           d += 10;
           if (d > Duration_ && d != Duration_ + 10) {
@@ -240,8 +240,8 @@ int main() {
                           data[Duration_].Dead, data[Duration_].Heal,
                           data[Duration_].Rec, data[Duration_].NewSusc,
                           data[Duration_].Beta, data[Duration_].Gamma,
-                          data[Duration_].HealIndex, data[Duration_].VaxIndex,
-                          Pop_);
+                          data[Duration_].DeadIndex,
+                          data[Duration_].VaxIndex, Pop_);
           }
         }
         break;
@@ -250,7 +250,7 @@ int main() {
         while (d <= Duration_) {
           control_print(d, data[d].Susc, data[d].Inf, data[d].Dead,
                         data[d].Heal, data[d].Rec, data[d].NewSusc,
-                        data[d].Beta, data[d].Gamma, data[d].HealIndex,
+                        data[d].Beta, data[d].Gamma, data[d].DeadIndex,
                         data[d].VaxIndex, Pop_);
           d += 20;
           if (d > Duration_ && d != Duration_ + 20) {
@@ -258,7 +258,7 @@ int main() {
                           data[Duration_].Dead, data[Duration_].Heal,
                           data[Duration_].Rec, data[Duration_].NewSusc,
                           data[Duration_].Beta, data[Duration_].Gamma,
-                          data[Duration_].HealIndex, data[Duration_].VaxIndex,
+                          data[Duration_].DeadIndex, data[Duration_].VaxIndex,
                           Pop_);
           }
         }

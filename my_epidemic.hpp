@@ -7,8 +7,7 @@
 #include <vector>
 #include <iomanip>
 
-// cambiare if riga 47 di Previous 's' con y e n  e cambiare funzione di aumento
-// healindex
+// cambiare if riga 47 di Previous 's' con y e n 
 
 struct PandemicData {
   int Susc;
@@ -19,7 +18,7 @@ struct PandemicData {
   int NewSusc;
   double Beta;
   double Gamma;
-  double HealIndex;
+  double DeadIndex;
   double VaxIndex;
 };
 
@@ -31,7 +30,7 @@ bool operator==(const std::vector<PandemicData> a,
     if (it->Susc == b[i].Susc && it->Inf == b[i].Inf && it->Dead == b[i].Dead &&
         it->Heal == b[i].Heal && it->NewSusc == b[i].NewSusc &&
         it->Beta == b[i].Beta && it->Gamma == b[i].Gamma &&
-        it->HealIndex == b[i].HealIndex && it->VaxIndex == b[i].VaxIndex) {
+        it->DeadIndex == b[i].DeadIndex && it->VaxIndex == b[i].VaxIndex) {
       res = true;
     } else {
       return false;
@@ -42,7 +41,7 @@ bool operator==(const std::vector<PandemicData> a,
 }
 
 void control_print(int day, int susc, int inf, int dead, int heal, int rec,
-                   int newsusc, double beta, double gamma, double healindex,
+                   int newsusc, double beta, double gamma, double deadindex,
                    double vaxindex, int pop) {
   assert(susc >= 0 && susc <= pop);
   assert(inf >= 0 && inf <= pop);
@@ -52,7 +51,7 @@ void control_print(int day, int susc, int inf, int dead, int heal, int rec,
   assert(newsusc >= 0 && newsusc <= pop);
   assert(heal >= 0 && heal <= rec);
   assert(dead >= 0 && dead <= rec);
-  assert(healindex >= 0 && healindex <= 1);
+  assert(deadindex >= 0 && deadindex <= 1);
   assert(vaxindex >= 0 && vaxindex <= 1);
   assert(beta >= 0 && beta <= 1);
   assert(gamma >= 0 && gamma <= 1);
@@ -64,7 +63,7 @@ void control_print(int day, int susc, int inf, int dead, int heal, int rec,
             << std::setw(12) << inf << "|" << std::setw(12) << dead << "|"
             << std::setw(12) << heal << "|" << std::setw(12) << rec << "|"
             << std::setw(12) << newsusc << "|" << std::setw(12) << beta << "|"
-            << std::setw(12) << gamma << "|" << std::setw(12) << healindex
+            << std::setw(12) << gamma << "|" << std::setw(12) << deadindex
             << "|" << std::setw(12) << vaxindex << "|" << std::setw(12) << pop
             << "|\n";
 }
@@ -96,26 +95,24 @@ class Contagion {
       int Pop_ = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
       int NewRec = std::round(newstate.Gamma * state.Inf);
       int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
-      int NewHeal = std::round(NewRec * newstate.HealIndex);
+      int NewDead = std::round(NewRec * newstate.DeadIndex);
 
       if (Previous == 'Y' || Previous == 'y') {
         if (i > hd - PanStart) {
           // deve essere inv prop a beta
           // int eY = ((i - hd + PanStart));
           double exponentialY = std::exp(-(i - hd + PanStart) / 260.0);
-          state.HealIndex = ((1 - result[0].HealIndex) * (1 - exponentialY) +
-                             result[0].HealIndex);
+          state.DeadIndex = (result[0].DeadIndex * exponentialY);
         } else {
-          state.HealIndex = newstate.HealIndex;
+          state.DeadIndex = newstate.DeadIndex;
         }
       } else if (Previous == 'N' || Previous == 'n') {
         if (i > hd) {
           // int eN = ((i - hd));
           double exponentialN = std::exp(-(i - hd) / 260.0);
-          state.HealIndex = ((1 - result[0].HealIndex) * (1 - exponentialN) +
-                             result[0].HealIndex);
+          state.DeadIndex = (result[0].DeadIndex * exponentialN);
         } else {
-          state.HealIndex = newstate.HealIndex;
+          state.DeadIndex = newstate.DeadIndex;
         }
       };
 
@@ -141,8 +138,8 @@ class Contagion {
       state.Susc += newstate.NewSusc - NewInf - NewVax_;
       state.Inf += NewInf - NewRec;
       state.Rec += NewRec + NewVax_ - newstate.NewSusc; 
-      state.Dead += NewRec - NewHeal;
-      state.Heal += NewHeal + NewVax_ - newstate.NewSusc;
+      state.Dead += NewDead;
+      state.Heal += NewRec - NewDead + NewVax_ - newstate.NewSusc;
       state.NewSusc = newstate.NewSusc;
 
       result.push_back(state);  // vengono immagazzinati tutti i valori di state
