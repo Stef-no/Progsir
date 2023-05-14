@@ -122,24 +122,24 @@ class Contagion {
             result[j].Heal - result[j - 1].Heal + result[j].NewSusc;
       }
 
-      int NewVax_ = 0;
+      int NewVax = 0;
       if (state.Inf > Pop_ * 0.001) {
         if (VaxStart <= i && VaxStart + VaxMax > i) {
-          NewVax_ = (state.Susc + newstate.NewSusc - NewInf) *
-                    newstate.VaxIndex * ((i - VaxStart + 1) / VaxMax);
+          NewVax = (state.Susc + newstate.NewSusc - NewInf) *
+                    newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
         } else if (VaxStart + VaxMax <= i) {
-          NewVax_ =
-              (state.Susc + newstate.NewSusc - NewVax_) * newstate.VaxIndex;
+          NewVax =
+              (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
         }
       } else {
-        NewVax_ = 0;
+        NewVax = 0;
       }
 
-      state.Susc += newstate.NewSusc - NewInf - NewVax_;
+      state.Susc += newstate.NewSusc - NewInf - NewVax;
       state.Inf += NewInf - NewRec;
-      state.Rec += NewRec + NewVax_ - newstate.NewSusc; 
+      state.Rec += NewRec + NewVax - newstate.NewSusc; 
       state.Dead += NewDead;
-      state.Heal += NewRec - NewDead + NewVax_ - newstate.NewSusc;
+      state.Heal += NewRec - NewDead + NewVax - newstate.NewSusc;
       state.NewSusc = newstate.NewSusc;
 
       result.push_back(state);  // vengono immagazzinati tutti i valori di state
