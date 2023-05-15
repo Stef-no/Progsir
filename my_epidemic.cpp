@@ -28,6 +28,10 @@ int main() {
   NewSusc_ = 0;
   char View_ = 'y';*/
 
+  std::cout << "Nell'inserimento dei dati della pandemia si richiede di seguire le seguenti indicazioni: \n";
+  std::cout << "- i dati temporali e riguardanti la popolazione sono numeri interi e positivi; \n";
+  std::cout << "- gli indici sono numeri decimali compresi tra 0 e 1 (estremi inclusi). \n";
+
   std::cout << "Inserire \n";
   int Pop_;
   std::cout << "Popolazione totale:\t";
