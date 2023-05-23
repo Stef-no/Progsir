@@ -13,18 +13,17 @@ struct SirData {
   int Susc;
   int Inf;
   int Rec;
-  int NewSusc;
   double Beta;
   double Gamma;
 };
 
-bool operator==(const std::vector<SircData> a,
-                const std::vector<SircData> b) {
+bool operator==(const std::vector<SirData> a,
+                const std::vector<SirData> b) {
   bool res = true;
   int i = 0;
   for (auto it = a.begin(), end = a.end(); it != end; it++) {
-    if (it->Susc == b[i].Susc && it->Inf == b[i].Inf && it->NewSusc == b[i].NewSusc &&
-        it->Beta == b[i].Beta && it->Gamma == b[i].Gamma &&) {
+    if (it->Susc == b[i].Susc && it->Inf == b[i].Inf &&
+        it->Beta == b[i].Beta && it->Gamma == b[i].Gamma) {
       res = true;
     } else {
       return false;
@@ -35,11 +34,10 @@ bool operator==(const std::vector<SircData> a,
 }
 
 void control_print(int day, int susc, int inf, int rec,
-                   int newsusc, double beta, double gamma, int pop) {
+                  double beta, double gamma, int pop) {
   assert(susc >= 0 && susc <= pop);
   assert(inf >= 0 && inf <= pop);
-  assert(rec >= 0 && rec <= pop);
-  assert(newsusc >= 0 && newsusc <= pop);
+  assert(rec >= 0 && rec <= pop);;
   assert(beta >= 0 && beta <= 1);
   assert(gamma >= 0 && gamma <= 1);
   assert(pop == susc + inf + rec);
@@ -47,8 +45,8 @@ void control_print(int day, int susc, int inf, int rec,
 
   std::cout << std::setw(9) << day << "|" << std::setw(12) << susc << "|"
             << std::setw(12) << inf << "|" << std::setw(12) << rec << "|" 
-            << std::setw(12) << newsusc << "|" << std::setw(12) << beta << "|"
-            << std::setw(12) << gamma << "|" << std::setw(12) << pop
+            << std::setw(12) << beta << "|" << std::setw(12) << gamma << "|" 
+            << std::setw(12) << pop
             << "|\n";
 }
 
@@ -58,7 +56,7 @@ class Simulation {
 
  public:
   Simulation(SirData& initial_state)
-      : newstate{initial_state}, {}
+      : newstate{initial_state} {}
 
   std::vector<SirData> generate_data(int Duration_) {
     std::vector<SirData> result{newstate};
@@ -70,10 +68,9 @@ class Simulation {
       int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
      
 
-      state.Susc += newstate.NewSusc - NewInf;
+      state.Susc = state.Susc - NewInf;
       state.Inf += NewInf - NewRec;
-      state.Rec += NewRec - newstate.NewSusc; 
-      state.NewSusc = newstate.NewSusc;
+      state.Rec += NewRec;
 
       result.push_back(state);  // vengono immagazzinati tutti i valori di state
                                 // giorno per giorno

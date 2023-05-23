@@ -6,15 +6,14 @@
 #include "my_date.hpp"
 
 int main() {
-  /*int Pop_, Inf_, Duration_, NewSusc_;
+  /*int Pop_, Inf_, Duration_;
   double Beta_, Gamma_;  // so che Giacomini non apprezza
 
   Pop_ = 1010;
   Inf_ = 10;
   Beta_ = 0.3;
   Gamma_ = 0.05;
-  Duration_ = 10;
-  NewSusc_ = 0;*/
+  Duration_ = 10; */
  
   std::cout << "Nell'inserimento dei dati della pandemia si richiede di seguire le seguenti indicazioni: \n";
   std::cout << "- i dati temporali e riguardanti la popolazione sono numeri interi e positivi; \n";
@@ -36,6 +35,15 @@ int main() {
     std::cout << " Inf's value has to be between 0 and Pop's value.\n ";
     std::cin >> Inf_;
   }
+
+   int Rec_;
+  std::cout << "Popolazione rimossa:\t";
+  std::cin >> Rec_;
+  while (Rec_ < 0 || Rec_ > Pop_) {
+    std::cout << " Inf's value has to be between 0 and Pop's value.\n ";
+    std::cin >> Rec_;
+  }
+
 
   double Beta_;
   std::cout << "Indice di contagiosità:\t";
@@ -63,8 +71,6 @@ int main() {
   }
 
 
-  int NewSusc_ = 0;
-
   char View_;
   std::cout << "Vuoi vedere tutti i giorni in stampa?\t";
   std::cin >> View_;
@@ -76,20 +82,18 @@ int main() {
   SirData initial_state{Pop_ - Inf_ - Rec_,
                              Inf_,
                              Rec_,
-                             NewSusc_,
                              Beta_,
                              Gamma_,
                              };
   
   Simulation epidemic{initial_state};
-  std::vector<PandemicData> data = epidemic.generate_data(Duration_);
+  std::vector<SirData> data = epidemic.generate_data(Duration_);
   int d = 0;
   std::cout << '\n'
             << std::setw(9) << "Giorno  "
             << "|" << std::setw(12) << "Suscettibili"
             << "|" << std::setw(12) << "Infetti  "
             << "|" << std::setw(12) << "Rimossi  "
-            << "|" << std::setw(12) << "NewSusc  "
             << "|" << std::setw(12) << "Infettività "
             << "|" << std::setw(12) << "Rimozione  "
             << "|" << std::setw(12) << "Popolation "
@@ -101,7 +105,7 @@ int main() {
 
   if (View_ == 'Y' || View_ == 'y') {
     while (d <= Duration_) {
-      control_print(d, data[d].Susc, data[d].Inf,data[d].Rec, data[d].NewSusc,
+      control_print(d, data[d].Susc, data[d].Inf,data[d].Rec,
                     data[d].Beta, data[d].Gamma, Pop_);
       ++d;
     }
@@ -120,7 +124,7 @@ int main() {
     switch (a) {
       case 'x':
         while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, data[d].NewSusc,
+          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
                         data[d].Beta, data[d].Gamma, Pop_);
           ++d;
         }
@@ -128,26 +132,24 @@ int main() {
 
       case 'y':
         while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, data[d].NewSusc,
+          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
                         data[d].Beta, data[d].Gamma, Pop_);
           d += 10;
           if (d > Duration_ && d != Duration_ + 10) {
             control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Rec, data[Duration_].NewSusc,
-                          data[Duration_].Beta, data[Duration_].Gamma, Pop_);
+                          data[Duration_].Rec, data[Duration_].Beta, data[Duration_].Gamma, Pop_);
           }
         }
         break;
 
       case 'z':
         while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, data[d].NewSusc,
+          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
                         data[d].Beta, data[d].Gamma, Pop_);
           d += 20;
           if (d > Duration_ && d != Duration_ + 20) {
             control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Rec, data[Duration_].NewSusc,
-                          data[Duration_].Beta, data[Duration_].Gamma, Pop_);
+                          data[Duration_].Rec, data[Duration_].Beta, data[Duration_].Gamma, Pop_);
           }
         }
         break;
