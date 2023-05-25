@@ -99,17 +99,14 @@ class Contagion {
 
       if (Previous == 'Y' || Previous == 'y') {
         if (i > hd - PanStart) {
-          // deve essere inv prop a beta
-          // int eY = ((i - hd + PanStart));
-          double exponentialY = std::exp(-(i - hd + PanStart) / 260.0);
+          double exponentialY = std::exp((hd - i - PanStart) / 260.0);
           state.DeadIndex = (result[0].DeadIndex * exponentialY);
         } else {
           state.DeadIndex = newstate.DeadIndex;
         }
       } else if (Previous == 'N' || Previous == 'n') {
         if (i > hd) {
-          // int eN = ((i - hd));
-          double exponentialN = std::exp(-(i - hd) / 260.0);
+          double exponentialN = std::exp((hd - i) / 260.0);
           state.DeadIndex = (result[0].DeadIndex * exponentialN);
         } else {
           state.DeadIndex = newstate.DeadIndex;

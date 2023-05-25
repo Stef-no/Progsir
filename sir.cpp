@@ -82,11 +82,11 @@ int main() {
   SirData initial_state{Pop_ - Inf_ - Rec_,
                              Inf_,
                              Rec_,
-                             Beta_,
-                             Gamma_,
                              };
   
-  Simulation epidemic{initial_state};
+  Simulation epidemic{initial_state,
+                             Beta_,
+                             Gamma_};
   std::vector<SirData> data = epidemic.generate_data(Duration_);
   int d = 0;
   std::cout << '\n'
@@ -98,15 +98,14 @@ int main() {
             << "|" << std::setw(12) << "Rimozione  "
             << "|" << std::setw(12) << "Popolation "
             << "|\n"
-            << "---------------------------------------------------------------"   
-               "---------------------------------------------------------------"
-               "---------------------------"
+            << "---------------------------------------------------------------" 
+               "-------------------------"
             << '\n';
 
   if (View_ == 'Y' || View_ == 'y') {
     while (d <= Duration_) {
       control_print(d, data[d].Susc, data[d].Inf,data[d].Rec,
-                    data[d].Beta, data[d].Gamma, Pop_);
+                    Beta_, Gamma_, Pop_);
       ++d;
     }
   } else if (View_ == 'N' || View_ == 'n') {
@@ -125,7 +124,7 @@ int main() {
       case 'x':
         while (d <= Duration_) {
           control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
-                        data[d].Beta, data[d].Gamma, Pop_);
+                        Beta_, Gamma_, Pop_);
           ++d;
         }
         break;
@@ -133,11 +132,11 @@ int main() {
       case 'y':
         while (d <= Duration_) {
           control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
-                        data[d].Beta, data[d].Gamma, Pop_);
+                        Beta_, Gamma_, Pop_);
           d += 10;
           if (d > Duration_ && d != Duration_ + 10) {
             control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Rec, data[Duration_].Beta, data[Duration_].Gamma, Pop_);
+                          data[Duration_].Rec, Beta_, Gamma_, Pop_);
           }
         }
         break;
@@ -145,11 +144,11 @@ int main() {
       case 'z':
         while (d <= Duration_) {
           control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
-                        data[d].Beta, data[d].Gamma, Pop_);
+                        Beta_, Gamma_, Pop_);
           d += 20;
           if (d > Duration_ && d != Duration_ + 20) {
             control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Rec, data[Duration_].Beta, data[Duration_].Gamma, Pop_);
+                          data[Duration_].Rec, Beta_, Gamma_, Pop_);
           }
         }
         break;
@@ -157,8 +156,7 @@ int main() {
   }
 
   std::cout << "---------------------------------------------------------------"
-               "---------------------------------------------------------------"
-               "---------------------------\n";
+               "-------------------------\n";
 
   now = time(0) + ConvToSec(Duration_);
   tm *ldt = localtime(&now);

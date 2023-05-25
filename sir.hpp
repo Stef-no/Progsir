@@ -13,8 +13,6 @@ struct SirData {
   int Susc;
   int Inf;
   int Rec;
-  double Beta;
-  double Gamma;
 };
 
 bool operator==(const std::vector<SirData> a,
@@ -22,8 +20,7 @@ bool operator==(const std::vector<SirData> a,
   bool res = true;
   int i = 0;
   for (auto it = a.begin(), end = a.end(); it != end; it++) {
-    if (it->Susc == b[i].Susc && it->Inf == b[i].Inf &&
-        it->Beta == b[i].Beta && it->Gamma == b[i].Gamma) {
+    if (it->Susc == b[i].Susc && it->Inf == b[i].Inf) {
       res = true;
     } else {
       return false;
@@ -53,10 +50,12 @@ void control_print(int day, int susc, int inf, int rec,
 class Simulation {
  private:
   SirData newstate;
+  double Beta;
+  double Gamma;
 
  public:
-  Simulation(SirData& initial_state)
-      : newstate{initial_state} {}
+  Simulation(SirData& initial_state, double beta, double gamma)
+      : newstate{initial_state}, Beta {beta}, Gamma {gamma} {}
 
   std::vector<SirData> generate_data(int Duration_) {
     std::vector<SirData> result{newstate};
@@ -64,8 +63,8 @@ class Simulation {
 
     for (int i = 0; i < Duration_; ++i) {
       int Pop_ = newstate.Susc + newstate.Inf + newstate.Rec;
-      int NewRec = std::round(newstate.Gamma * state.Inf);
-      int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
+      int NewRec = std::round(Gamma * state.Inf);
+      int NewInf = std::round(Beta / Pop_ * state.Susc * state.Inf);
      
 
       state.Susc = state.Susc - NewInf;
