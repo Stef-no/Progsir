@@ -39,23 +39,7 @@ bool operator==(const std::vector<PandemicData> a,
   }  // guardare iteratori e for particolare più veloce
   return res;
 }
-/*
-void decrescita (double new_value, double last_value, double initial_value, int
-today, int t_dimez, int pstart, int fase, char yon) { if (yon == 'Y' || yon ==
-'y') { if (today > fase - pstart) { double expY = std::exp((fase - pstart -
-today) * log(2) / t_dimez); new_value = (initial_value * expY); } else {
-      new_value = last_value;
-    }
-  } else if (yon == 'N' || yon == 'n') {
-    if (today > fase) {
-      double exponentialN = std::exp((fase - today) * log(2) / t_dimez);
-      new_value = (initial_value * exponentialN);
-    } else {
-      new_value = last_value;
-    }
-  };
-}
-*/
+
 void control_print(int day, int susc, int inf, int dead, int heal, int rec,
                    int newsusc, double beta, double gamma, double deadindex,
                    double vaxindex, int pop) {
@@ -88,11 +72,14 @@ class Contagion {
  private:
   PandemicData newstate;
   char DIVar;
+  int DIVarStart;
   int DIVarTime;
   int ImmDur;
   char bVar;
+  int bVarStart;
   int bVarTime;
   char gVar;
+  int gVarStart;
   int gVarTime;
   int PanStart;
   int VaxStart;
@@ -100,15 +87,19 @@ class Contagion {
   char Previous;
 
  public:
-  Contagion(PandemicData& initial_state, char div, int divt, int id, char bv, int bvt, char gv,
-            int gvt, int ps, int vs, int vm, char p)
+  Contagion(PandemicData& initial_state, char div, int divs, int divt, int id,
+            char bv, int bvs, int bvt, char gv, int gvs, int gvt, int ps,
+            int vs, int vm, char p)
       : newstate{initial_state},
         DIVar{div},
+        DIVarStart{divs},
         DIVarTime{divt},
         ImmDur{id},
         bVar{bv},
+        bVarStart{bvs},
         bVarTime{bvt},
         gVar{gv},
+        gVarStart{gvs},
         gVarTime{gvt},
         PanStart{ps},
         VaxStart{vs},
@@ -116,9 +107,10 @@ class Contagion {
         Previous{p} {}
 
   std::vector<PandemicData> generate_data(int Duration_) {
-    int hd = std::round(50 * exp(-2.0 * newstate.Beta) + 30);
     std::vector<PandemicData> result{newstate};
     PandemicData state = result.back();
+
+    // double vi = state.VaxIndex;
 
     for (int i = 0; i < Duration_; ++i) {
       int Pop_ = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
@@ -126,65 +118,77 @@ class Contagion {
       int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
       int NewDead = std::round(NewRec * newstate.DeadIndex);
 
-      // decrescita (state.DeadIndex, newstate.DeadIndex, result[0].DeadIndex,
-      // i, 180, PanStart, hd, Previous);
-
-
       if (Previous == 'Y' || Previous == 'y') {
-        if (i > hd - PanStart) {
-          int expoY = (hd - PanStart - i) * log(2);
-
+        if (i > DIVarStart - PanStart) {
           if (DIVar == 'Y' || DIVar == 'y') {
-            double exponentialDIY = std::exp((expoY) / DIVarTime);
+            double exponentialDIY =
+                std::exp((DIVarStart - PanStart - i) * log(2) / DIVarTime);
             state.DeadIndex = (result[0].DeadIndex * exponentialDIY);
           } else if (bVar == 'N' || bVar == 'n') {
             state.DeadIndex = result[0].DeadIndex;
           };
+        } else {
+          state.DeadIndex = result[0].DeadIndex;
+        }
 
+        if (i > bVarStart - PanStart) {
           if (bVar == 'Y' || bVar == 'y') {
-            double exponentialbY = std::exp((expoY) / bVarTime);
+            double exponentialbY =
+                std::exp((bVarStart - PanStart - i) * log(2) / bVarTime);
             state.Beta = (result[0].Beta * exponentialbY);
           } else if (bVar == 'N' || bVar == 'n') {
             state.Beta = result[0].Beta;
           };
+        } else {
+          state.Beta = result[0].Beta;
+        }
 
+        if (i > bVarStart - PanStart) {
           if (gVar == 'Y' || gVar == 'y') {
-            double exponentialgY = std::exp((expoY) / gVarTime);
+            double exponentialgY =
+                std::exp((gVarStart - PanStart - i) * log(2) / gVarTime);
             state.Gamma = (result[0].Gamma * exponentialgY);
           } else if (gVar == 'N' || gVar == 'n') {
             state.Gamma = result[0].Gamma;
           };
         } else {
-          state.DeadIndex = result[0].DeadIndex;
-          state.Beta = result[0].Beta;
           state.Gamma = result[0].Gamma;
         }
+
       } else if (Previous == 'N' || Previous == 'n') {
-        if (i > hd) {
-          int expoN = (hd - i) * log(2);
+        if (i > DIVarStart) {
           if (DIVar == 'Y' || DIVar == 'y') {
-            double exponentialDIY = std::exp((expoN) / DIVarTime);
+            double exponentialDIY =
+                std::exp((DIVarStart - i) * log(2) / DIVarTime);
             state.DeadIndex = (result[0].DeadIndex * exponentialDIY);
           } else if (bVar == 'N' || bVar == 'n') {
             state.DeadIndex = result[0].DeadIndex;
           };
+        } else {
+          state.DeadIndex = result[0].DeadIndex;
+        }
 
+        if (i > bVarStart - PanStart) {
           if (bVar == 'Y' || bVar == 'y') {
-            double exponentialbY = std::exp((expoN) / bVarTime);
+            double exponentialbY =
+                std::exp((bVarStart - i) * log(2) / bVarTime);
             state.Beta = (result[0].Beta * exponentialbY);
           } else if (bVar == 'N' || bVar == 'n') {
             state.Beta = result[0].Beta;
           };
+        } else {
+          state.Beta = result[0].Beta;
+        }
 
+        if (i > bVarStart - PanStart) {
           if (gVar == 'Y' || gVar == 'y') {
-            double exponentialgY = std::exp((expoN) / gVarTime);
+            double exponentialgY =
+                std::exp((gVarStart - i) * log(2) / gVarTime);
             state.Gamma = (result[0].Gamma * exponentialgY);
           } else if (gVar == 'N' || gVar == 'n') {
             state.Gamma = result[0].Gamma;
           };
         } else {
-          state.DeadIndex = result[0].DeadIndex;
-          state.Beta = result[0].Beta;
           state.Gamma = result[0].Gamma;
         }
       };

@@ -69,11 +69,20 @@ int main() {
   }
 
   int bVarTime_ = 0;
+  int bVarStart_ = 0;
+
   if (bVar_ == 'Y' || bVar_ == 'y') {
+    std::cout << "Giorno di inizio della diminuzione di beta:\t";
+    std::cin >> bVarStart_;
+    while (bVarStart_ < 0) {
+      std::cout << " bVarStart has to be > than 0.\n ";
+      std::cin >> bVarStart_;
+    }
+
     std::cout << "Quando vale il tempo di dimezzamento dell'indice di "
                  "contagione? \t";
     std::cin >> bVarTime_;
-    while (bVarTime_ <= 0) {
+    while (bVarTime_ < 0) {
       std::cout << "bVarTime has to be > 0.\n ";
       std::cin >> bVarTime_;
     }
@@ -95,12 +104,21 @@ int main() {
     std::cin >> gVar_;
   }
 
+  int gVarStart_ = 0;
   int gVarTime_ = 0;
+
   if (gVar_ == 'Y' || gVar_ == 'y') {
-    std::cout << "Quando vale il tempo di dimezzamento dell'indice di "
+    std::cout << "Giorno di inizio della variazione di gamma:\t";
+    std::cin >> gVarStart_;
+    while (gVarStart_ < 0) {
+      std::cout << " gVarStart has to be > than 0.\n ";
+      std::cin >> gVarStart_;
+    }
+
+    std::cout << "Quando vale il tempo di dimezzamento dell'indice di NON"
                  "rimozione? \t";
     std::cin >> gVarTime_;
-    while (gVarTime_ <= 0) {
+    while (gVarTime_ < 0) {
       std::cout << "gVarTime has to be > 0.\n ";
       std::cin >> gVarTime_;
     }
@@ -123,22 +141,60 @@ int main() {
   }
 
   int DIVarTime_ = 0;
+  int DIVarStart_ = 0;
+
   if (DIVar_ == 'Y' || DIVar_ == 'y') {
+    std::cout << "Giorno di inizio della variazione della mortalità:\t";
+    std::cin >> DIVarStart_;
+    while (DIVarStart_ < 0) {
+      std::cout << " Il giorno di inizio della variazione della mortalità has "
+                   "to be > than 0.\n ";
+      std::cin >> DIVarStart_;
+    }
+
     std::cout << "Quando vale il tempo di dimezzamento dell'indice di "
                  "mortalità? \t";
     std::cin >> DIVarTime_;
-    while (DIVarTime_ <= 0) {
+    while (DIVarTime_ < 0) {
       std::cout << "DIVarTime has to be > 0.\n ";
       std::cin >> DIVarTime_;
     }
   }
 
-  double VaxIndex_;
-  std::cout << "Indice di vaccinazione:\t";
-  std::cin >> VaxIndex_;
-  while (VaxIndex_ < 0 || VaxIndex_ > 1) {
-    std::cout << " VaxIndex's value has to be between 0 and 1.\n ";
+  char Vax_;
+  std::cout << "Ci sono i vaccini?\t";
+  std::cin >> Vax_;
+  while (Vax_ != 'N' && Vax_ != 'Y' && Vax_ != 'n' && Vax_ != 'y') {
+    std::cout << " Vax has to be Y/n.\n ";
+    std::cin >> Vax_;
+  }
+
+  double VaxIndex_ = 0;
+  int VaxStart_ = 0;
+  int VaxMax_ = 0;
+
+  if (Vax_ == 'Y' || Vax_ == 'y') {
+    std::cout << "Indice di vaccinazione:\t";
     std::cin >> VaxIndex_;
+    while (VaxIndex_ < 0 || VaxIndex_ > 1) {
+      std::cout << " VaxIndex's value has to be between 0 and 1.\n ";
+      std::cin >> VaxIndex_;
+    }
+
+    std::cout << "Giorno di inizio dei vaccini:\t";
+    std::cin >> VaxStart_;
+    while (VaxStart_ < 0) {
+      std::cout << " VaxStart has to be > than 0.\n ";
+      std::cin >> VaxStart_;
+    }
+
+    std::cout << "Giorni per raggiungere la massima velocità percentuale di "
+                 "vaccinazione :\t";
+    std::cin >> VaxMax_;
+    while (VaxMax_ < 0) {
+      std::cout << " VaxMax has to be > than 0.\n ";
+      std::cin >> VaxMax_;
+    }
   }
 
   int Duration_;
@@ -155,23 +211,6 @@ int main() {
   while (ImmDur_ <= 0) {
     std::cout << " Imm has to be > than 0.\n ";
     std::cin >> ImmDur_;
-  }
-
-  int VaxStart_;
-  std::cout << "Giorno di inizio dei vaccini:\t";
-  std::cin >> VaxStart_;
-  while (VaxStart_ <= 0) {
-    std::cout << " VaxStart has to be > than 0.\n ";
-    std::cin >> VaxStart_;
-  }
-
-  int VaxMax_;
-  std::cout << "Giorni per raggiungere la massima velocità percentuale di "
-               "vaccinazione :\t";
-  std::cin >> VaxMax_;
-  while (VaxMax_ <= 0) {
-    std::cout << " VaxMax has to be > than 0.\n ";
-    std::cin >> VaxMax_;
   }
 
   char Previous_;
@@ -239,8 +278,10 @@ int main() {
                              Gamma_,
                              DeadIndex_,
                              VaxIndex_};
-  Contagion epidemic{initial_state, DIVar_, DIVarTime_, ImmDur_,   bVar_,     bVarTime_, gVar_,
-                     gVarTime_,     PanStart_, VaxStart_, VaxMax_,   Previous_};
+  Contagion epidemic{initial_state, DIVar_,     DIVarStart_, DIVarTime_,
+                     ImmDur_,       bVar_,      bVarStart_,  bVarTime_,
+                     gVar_,         gVarStart_, gVarTime_,   PanStart_,
+                     VaxStart_,     VaxMax_,    Previous_};
   std::vector<PandemicData> data = epidemic.generate_data(Duration_);
   int d = 0;
   std::cout << '\n'
