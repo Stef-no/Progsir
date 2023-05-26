@@ -28,9 +28,12 @@ int main() {
   NewSusc_ = 0;
   char View_ = 'y';*/
 
-  std::cout << "Nell'inserimento dei dati della pandemia si richiede di seguire le seguenti indicazioni: \n";
-  std::cout << "- i dati temporali e riguardanti la popolazione sono numeri interi e positivi; \n";
-  std::cout << "- gli indici sono numeri decimali compresi tra 0 e 1 (estremi inclusi). \n";
+  std::cout << "Nell'inserimento dei dati della pandemia si richiede di "
+               "seguire le seguenti indicazioni: \n";
+  std::cout << "- i dati temporali e riguardanti la popolazione sono numeri "
+               "interi e positivi; \n";
+  std::cout << "- gli indici sono numeri decimali compresi tra 0 e 1 (estremi "
+               "inclusi). \n";
 
   std::cout << "Inserire \n";
   int Pop_;
@@ -57,6 +60,25 @@ int main() {
     std::cin >> Beta_;
   }
 
+  char bVar_;
+  std::cout << "Beta varia?\t";
+  std::cin >> bVar_;
+  while (bVar_ != 'N' && bVar_ != 'Y' && bVar_ != 'n' && bVar_ != 'y') {
+    std::cout << " Beta variation has to be Y/n.\n ";
+    std::cin >> bVar_;
+  }
+
+  int bVarTime_ = 0;
+  if (bVar_ == 'Y' || bVar_ == 'y') {
+    std::cout << "Quando vale il tempo di dimezzamento dell'indice di "
+                 "contagione? \t";
+    std::cin >> bVarTime_;
+    while (bVarTime_ <= 0) {
+      std::cout << "bVarTime has to be > 0.\n ";
+      std::cin >> bVarTime_;
+    }
+  }
+
   double Gamma_;
   std::cout << "Indice di rimozione:\t";
   std::cin >> Gamma_;
@@ -65,12 +87,50 @@ int main() {
     std::cin >> Gamma_;
   }
 
+  char gVar_;
+  std::cout << "Gamma varia?\t";
+  std::cin >> gVar_;
+  while (gVar_ != 'N' && gVar_ != 'Y' && gVar_ != 'n' && gVar_ != 'y') {
+    std::cout << " Gamma variation has to be Y/n.\n ";
+    std::cin >> gVar_;
+  }
+
+  int gVarTime_ = 0;
+  if (gVar_ == 'Y' || gVar_ == 'y') {
+    std::cout << "Quando vale il tempo di dimezzamento dell'indice di "
+                 "rimozione? \t";
+    std::cin >> gVarTime_;
+    while (gVarTime_ <= 0) {
+      std::cout << "gVarTime has to be > 0.\n ";
+      std::cin >> gVarTime_;
+    }
+  }
+
   double DeadIndex_;
   std::cout << "Indice di mortalità:\t";
   std::cin >> DeadIndex_;
   while (DeadIndex_ < 0 || DeadIndex_ > 1) {
     std::cout << " DeadIndex's value has to be between 0 and 1.\n ";
     std::cin >> DeadIndex_;
+  }
+
+  char DIVar_;
+  std::cout << "La mortalità varia?\t";
+  std::cin >> DIVar_;
+  while (DIVar_ != 'N' && DIVar_ != 'Y' && DIVar_ != 'n' && DIVar_ != 'y') {
+    std::cout << " Mortality variation has to be Y/n.\n ";
+    std::cin >> DIVar_;
+  }
+
+  int DIVarTime_ = 0;
+  if (DIVar_ == 'Y' || DIVar_ == 'y') {
+    std::cout << "Quando vale il tempo di dimezzamento dell'indice di "
+                 "mortalità? \t";
+    std::cin >> DIVarTime_;
+    while (DIVarTime_ <= 0) {
+      std::cout << "DIVarTime has to be > 0.\n ";
+      std::cin >> DIVarTime_;
+    }
   }
 
   double VaxIndex_;
@@ -179,8 +239,8 @@ int main() {
                              Gamma_,
                              DeadIndex_,
                              VaxIndex_};
-  Contagion epidemic{initial_state, ImmDur_, PanStart_,
-                     VaxStart_,     VaxMax_, Previous_};
+  Contagion epidemic{initial_state, DIVar_, DIVarTime_, ImmDur_,   bVar_,     bVarTime_, gVar_,
+                     gVarTime_,     PanStart_, VaxStart_, VaxMax_,   Previous_};
   std::vector<PandemicData> data = epidemic.generate_data(Duration_);
   int d = 0;
   std::cout << '\n'
@@ -244,8 +304,8 @@ int main() {
                           data[Duration_].Dead, data[Duration_].Heal,
                           data[Duration_].Rec, data[Duration_].NewSusc,
                           data[Duration_].Beta, data[Duration_].Gamma,
-                          data[Duration_].DeadIndex,
-                          data[Duration_].VaxIndex, Pop_);
+                          data[Duration_].DeadIndex, data[Duration_].VaxIndex,
+                          Pop_);
           }
         }
         break;

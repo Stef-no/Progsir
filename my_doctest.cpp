@@ -21,7 +21,7 @@ TEST_CASE("Testing struct PandemicData") {
 
 TEST_CASE("Contagion generate_data returns the expected results") {
   PandemicData initial_state{1000, 10, 0, 0, 0, 0, 0.3, 0.05, 0.5, 0.3};
-  Contagion test_cont{initial_state, 1, 0, 1, 1, 'n'};
+  Contagion test_cont{initial_state, 'y', 180, 1, 'n', 1, 'n', 1, 0, 1, 1, 'n'};
   int duration{10};
   std::vector<PandemicData> expected_data{
       {1000, 10, 0, 0, 0, 0, 0.3, 0.05, 0.5, 0.3},

@@ -3,11 +3,11 @@
 
 #include <cassert>
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <vector>
-#include <iomanip>
 
-// cambiare if riga 47 di Previous 's' con y e n 
+// cambiare if riga 47 di Previous 's' con y e n
 
 struct PandemicData {
   int Susc;
@@ -40,12 +40,10 @@ bool operator==(const std::vector<PandemicData> a,
   return res;
 }
 /*
-void decrescita (int new_value, int last_value, int initial_value, int today, int t_dimez, int pstart, int fase, char yon) {
-  if (yon == 'Y' || yon == 'y') {
-    if (today > fase - pstart) {
-      double expY = std::exp((fase - pstart - today) * log(2) / t_dimez);
-      new_value = (initial_value * expY);
-    } else {
+void decrescita (double new_value, double last_value, double initial_value, int
+today, int t_dimez, int pstart, int fase, char yon) { if (yon == 'Y' || yon ==
+'y') { if (today > fase - pstart) { double expY = std::exp((fase - pstart -
+today) * log(2) / t_dimez); new_value = (initial_value * expY); } else {
       new_value = last_value;
     }
   } else if (yon == 'N' || yon == 'n') {
@@ -89,16 +87,29 @@ void control_print(int day, int susc, int inf, int dead, int heal, int rec,
 class Contagion {
  private:
   PandemicData newstate;
+  char DIVar;
+  int DIVarTime;
   int ImmDur;
+  char bVar;
+  int bVarTime;
+  char gVar;
+  int gVarTime;
   int PanStart;
   int VaxStart;
   int VaxMax;
   char Previous;
 
  public:
-  Contagion(PandemicData& initial_state, int id, int ps, int vs, int vm, char p)
+  Contagion(PandemicData& initial_state, char div, int divt, int id, char bv, int bvt, char gv,
+            int gvt, int ps, int vs, int vm, char p)
       : newstate{initial_state},
+        DIVar{div},
+        DIVarTime{divt},
         ImmDur{id},
+        bVar{bv},
+        bVarTime{bvt},
+        gVar{gv},
+        gVarTime{gvt},
         PanStart{ps},
         VaxStart{vs},
         VaxMax{vm},
@@ -115,21 +126,66 @@ class Contagion {
       int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
       int NewDead = std::round(NewRec * newstate.DeadIndex);
 
-      //decrescita (state.DeadIndex, newstate.DeadIndex, result[0].DeadIndex, i, 180, PanStart, hd, Previous);
+      // decrescita (state.DeadIndex, newstate.DeadIndex, result[0].DeadIndex,
+      // i, 180, PanStart, hd, Previous);
+
 
       if (Previous == 'Y' || Previous == 'y') {
         if (i > hd - PanStart) {
-          double exponentialY = std::exp((hd - i - PanStart) / 260.0);
-          state.DeadIndex = (result[0].DeadIndex * exponentialY);
+          int expoY = (hd - PanStart - i) * log(2);
+
+          if (DIVar == 'Y' || DIVar == 'y') {
+            double exponentialDIY = std::exp((expoY) / DIVarTime);
+            state.DeadIndex = (result[0].DeadIndex * exponentialDIY);
+          } else if (bVar == 'N' || bVar == 'n') {
+            state.DeadIndex = result[0].DeadIndex;
+          };
+
+          if (bVar == 'Y' || bVar == 'y') {
+            double exponentialbY = std::exp((expoY) / bVarTime);
+            state.Beta = (result[0].Beta * exponentialbY);
+          } else if (bVar == 'N' || bVar == 'n') {
+            state.Beta = result[0].Beta;
+          };
+
+          if (gVar == 'Y' || gVar == 'y') {
+            double exponentialgY = std::exp((expoY) / gVarTime);
+            state.Gamma = (result[0].Gamma * exponentialgY);
+          } else if (gVar == 'N' || gVar == 'n') {
+            state.Gamma = result[0].Gamma;
+          };
         } else {
-          state.DeadIndex = newstate.DeadIndex;
+          state.DeadIndex = result[0].DeadIndex;
+          state.Beta = result[0].Beta;
+          state.Gamma = result[0].Gamma;
         }
       } else if (Previous == 'N' || Previous == 'n') {
         if (i > hd) {
-          double exponentialN = std::exp((hd - i) / 260.0);
-          state.DeadIndex = (result[0].DeadIndex * exponentialN);
+          int expoN = (hd - i) * log(2);
+          if (DIVar == 'Y' || DIVar == 'y') {
+            double exponentialDIY = std::exp((expoN) / DIVarTime);
+            state.DeadIndex = (result[0].DeadIndex * exponentialDIY);
+          } else if (bVar == 'N' || bVar == 'n') {
+            state.DeadIndex = result[0].DeadIndex;
+          };
+
+          if (bVar == 'Y' || bVar == 'y') {
+            double exponentialbY = std::exp((expoN) / bVarTime);
+            state.Beta = (result[0].Beta * exponentialbY);
+          } else if (bVar == 'N' || bVar == 'n') {
+            state.Beta = result[0].Beta;
+          };
+
+          if (gVar == 'Y' || gVar == 'y') {
+            double exponentialgY = std::exp((expoN) / gVarTime);
+            state.Gamma = (result[0].Gamma * exponentialgY);
+          } else if (gVar == 'N' || gVar == 'n') {
+            state.Gamma = result[0].Gamma;
+          };
         } else {
-          state.DeadIndex = newstate.DeadIndex;
+          state.DeadIndex = result[0].DeadIndex;
+          state.Beta = result[0].Beta;
+          state.Gamma = result[0].Gamma;
         }
       };
 
@@ -143,7 +199,7 @@ class Contagion {
       if (state.Inf > Pop_ * 0.001) {
         if (VaxStart <= i && VaxStart + VaxMax > i) {
           NewVax = (state.Susc + newstate.NewSusc - NewInf) *
-                    newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
+                   newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
         } else if (VaxStart + VaxMax <= i) {
           NewVax = (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
         }
@@ -153,7 +209,7 @@ class Contagion {
 
       state.Susc += newstate.NewSusc - NewInf - NewVax;
       state.Inf += NewInf - NewRec;
-      state.Rec += NewRec + NewVax - newstate.NewSusc; 
+      state.Rec += NewRec + NewVax - newstate.NewSusc;
       state.Dead += NewDead;
       state.Heal += NewRec - NewDead + NewVax - newstate.NewSusc;
       state.NewSusc = newstate.NewSusc;
