@@ -39,7 +39,25 @@ bool operator==(const std::vector<PandemicData> a,
   }  // guardare iteratori e for particolare più veloce
   return res;
 }
-
+/*
+void decrescita (int new_value, int last_value, int initial_value, int today, int t_dimez, int pstart, int fase, char yon) {
+  if (yon == 'Y' || yon == 'y') {
+    if (today > fase - pstart) {
+      double expY = std::exp((fase - pstart - today) * log(2) / t_dimez);
+      new_value = (initial_value * expY);
+    } else {
+      new_value = last_value;
+    }
+  } else if (yon == 'N' || yon == 'n') {
+    if (today > fase) {
+      double exponentialN = std::exp((fase - today) * log(2) / t_dimez);
+      new_value = (initial_value * exponentialN);
+    } else {
+      new_value = last_value;
+    }
+  };
+}
+*/
 void control_print(int day, int susc, int inf, int dead, int heal, int rec,
                    int newsusc, double beta, double gamma, double deadindex,
                    double vaxindex, int pop) {
@@ -97,6 +115,8 @@ class Contagion {
       int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
       int NewDead = std::round(NewRec * newstate.DeadIndex);
 
+      //decrescita (state.DeadIndex, newstate.DeadIndex, result[0].DeadIndex, i, 180, PanStart, hd, Previous);
+
       if (Previous == 'Y' || Previous == 'y') {
         if (i > hd - PanStart) {
           double exponentialY = std::exp((hd - i - PanStart) / 260.0);
@@ -125,8 +145,7 @@ class Contagion {
           NewVax = (state.Susc + newstate.NewSusc - NewInf) *
                     newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
         } else if (VaxStart + VaxMax <= i) {
-          NewVax =
-              (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
+          NewVax = (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
         }
       } else {
         NewVax = 0;
