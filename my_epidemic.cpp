@@ -2,6 +2,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <limits>
 
 #include "my_date.hpp"
 
@@ -36,12 +37,26 @@ int main() {
                "inclusi). \n";
 
   std::cout << "Inserire \n";
+
+  // if (!std::cin) {
+  //   std::cin.clear();
+  //   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  // }
+
   int Pop_;
-  std::cout << "Popolazione totale:\t";
-  std::cin >> Pop_;
-  while (Pop_ <= 0) {
-    std::cout << " Population has to be > than 0.\n ";
-    std::cin >> Pop_;
+  while (true) {
+    std::cout << "Population: \n";
+    if (std::cin >> Pop_) {
+      while(Pop_ <= 0) {
+        std::cout << "Population has to be > 0 \n";
+        std::cin >> Pop_;
+      }
+      break;
+    } else {
+      std::cout << "Invalid input. \n";
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
   }
 
   int Inf_;
@@ -278,12 +293,16 @@ int main() {
                              Gamma_,
                              DeadIndex_,
                              VaxIndex_};
+
   Contagion epidemic{initial_state, DIVar_,     DIVarStart_, DIVarTime_,
                      ImmDur_,       bVar_,      bVarStart_,  bVarTime_,
                      gVar_,         gVarStart_, gVarTime_,   PanStart_,
                      VaxStart_,     VaxMax_,    Previous_};
+
   std::vector<PandemicData> data = epidemic.generate_data(Duration_);
+
   int d = 0;
+
   std::cout << '\n'
             << std::setw(9) << "Giorno  "
             << "|" << std::setw(12) << "Suscettibili"
