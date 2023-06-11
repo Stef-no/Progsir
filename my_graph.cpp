@@ -32,7 +32,12 @@ int main() {
   VaxIndex_ = 0.3;
   VaxMax_ = 1;
   NewSusc_ = 0;
-  char View_ = 'y';
+  DIVarStart_ = 60;
+  DIVarTime_ = 130;
+  bVarStart_ = 45;
+  bVarTime_ = 150;
+  gVarStart_ = 84;
+  gVarTime_ = 200;
 
   std::cout << "THE GRAPH SHOWS THE EVOLUTION OF THE EPIDEMIC/n"
             << "X Axis -> Time\n"  // scrivere cosa corrisponde ad ogni tacca
@@ -274,13 +279,6 @@ int main() {
     }
 
     int NewSusc_ = 0;
-
-    char View_;
-    std::cout << "Vuoi vedere tutti i giorni in stampa?\t";
-    std::cin >> View_;
-    while (View_ != 'N' && View_ != 'Y' && View_ != 'n' && View_ != 'y') {
-      std::cout << " View has to be Y/n.\n ";
-      std::cin >> View_;
     }
   */
   PandemicData initial_state{Pop_ - Inf_ - Dead_ - Heal_,
@@ -301,7 +299,8 @@ int main() {
 
   std::vector<PandemicData> data = graph.generate_data(Duration_);
 
-  sf::RenderWindow window(sf::VideoMode(sf::Vector2u(1200, 675)), "Grafico");
+  //sf::RenderWindow window(sf::VideoMode(sf::Vector2u(1200, 675)), "Grafico");
+  sf::RenderWindow window(sf::VideoMode(1200, 675), "Grafico");
 
   while (window.isOpen()) {
     sf::Event event;
