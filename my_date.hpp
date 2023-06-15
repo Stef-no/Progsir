@@ -1,3 +1,6 @@
+#ifndef MY_DATE_HPP
+#define MY_DATE_HPP
+
 #include <ctime>
 #include <vector>
 
@@ -25,3 +28,5 @@ std::string ConvToString(int month) {
 
   return Months[month];
 }
+
+#endif

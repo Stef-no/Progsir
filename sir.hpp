@@ -15,21 +15,6 @@ struct SirData {
   int Rec;
 };
 
-bool operator==(const std::vector<SirData> a,
-                const std::vector<SirData> b) {
-  bool res = true;
-  int i = 0;
-  for (auto it = a.begin(), end = a.end(); it != end; it++) {
-    if (it->Susc == b[i].Susc && it->Inf == b[i].Inf) {
-      res = true;
-    } else {
-      return false;
-    }
-    i++;
-  }  // guardare iteratori e for particolare più veloce
-  return res;
-}
-
 void control_print(int day, int susc, int inf, int rec,
                   double beta, double gamma, int pop) {
   assert(susc >= 0 && susc <= pop);

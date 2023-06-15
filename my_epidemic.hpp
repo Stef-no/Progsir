@@ -21,25 +21,7 @@ struct PandemicData {
   double DeadIndex;
   double VaxIndex;
 };
-
-bool operator==(const std::vector<PandemicData> a,
-                const std::vector<PandemicData> b) {
-  bool res = true;
-  int i = 0;
-  for (auto it = a.begin(), end = a.end(); it != end; it++) {
-    if (it->Susc == b[i].Susc && it->Inf == b[i].Inf && it->Dead == b[i].Dead &&
-        it->Heal == b[i].Heal && it->NewSusc == b[i].NewSusc &&
-        it->Beta == b[i].Beta && it->Gamma == b[i].Gamma &&
-        it->DeadIndex == b[i].DeadIndex && it->VaxIndex == b[i].VaxIndex) {
-      res = true;
-    } else {
-      return false;
-    }
-    i++;
-  }  // guardare iteratori e for particolare più veloce
-  return res;
-}
-
+/*
 void control_print(int day, int susc, int inf, int dead, int heal, int rec,
                    int newsusc, double beta, double gamma, double deadindex,
                    double vaxindex, int pop) {
@@ -67,7 +49,7 @@ void control_print(int day, int susc, int inf, int dead, int heal, int rec,
             << "|" << std::setw(12) << vaxindex << "|" << std::setw(12) << pop
             << "|\n";
 }
-
+*/
 class Contagion {
  private:
   PandemicData newstate;
@@ -82,6 +64,7 @@ class Contagion {
   int gVarStart;
   int gVarTime;
   int PanStart;
+  char Vax;
   int VaxStart;
   int VaxMax;
   char Previous;
@@ -89,7 +72,7 @@ class Contagion {
  public:
   Contagion(PandemicData& initial_state, char div, int divs, int divt, int id,
             char bv, int bvs, int bvt, char gv, int gvs, int gvt, int ps,
-            int vs, int vm, char p)
+            char v, int vs, int vm, char p)
       : newstate{initial_state},
         DIVar{div},
         DIVarStart{divs},
@@ -102,6 +85,7 @@ class Contagion {
         gVarStart{gvs},
         gVarTime{gvt},
         PanStart{ps},
+        Vax{v},
         VaxStart{vs},
         VaxMax{vm},
         Previous{p} {}
@@ -143,11 +127,11 @@ class Contagion {
           state.Beta = result[0].Beta;
         }
 
-        if (i > bVarStart - PanStart) {
+        if (i > gVarStart - PanStart) {
           if (gVar == 'Y' || gVar == 'y') {
             double exponentialgY =
                 std::exp((gVarStart - PanStart - i) * log(2) / gVarTime);
-            state.Gamma = (result[0].Gamma * exponentialgY);
+            state.Gamma = 1 - ((1- result[0].Gamma) * exponentialgY);
           } else if (gVar == 'N' || gVar == 'n') {
             state.Gamma = result[0].Gamma;
           };
@@ -180,11 +164,11 @@ class Contagion {
           state.Beta = result[0].Beta;
         }
 
-        if (i > bVarStart - PanStart) {
+        if (i > gVarStart - PanStart) {
           if (gVar == 'Y' || gVar == 'y') {
             double exponentialgY =
                 std::exp((gVarStart - i) * log(2) / gVarTime);
-            state.Gamma = (result[0].Gamma * exponentialgY);
+            state.Gamma = 1 - (( 1 - result[0].Gamma) * exponentialgY);
           } else if (gVar == 'N' || gVar == 'n') {
             state.Gamma = result[0].Gamma;
           };
@@ -200,16 +184,19 @@ class Contagion {
       }
 
       int NewVax = 0;
-      if (state.Inf > Pop_ * 0.001) {
-        if (VaxStart <= i && VaxStart + VaxMax > i) {
-          NewVax = (state.Susc + newstate.NewSusc - NewInf) *
-                   newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
-        } else if (VaxStart + VaxMax <= i) {
-          NewVax = (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
+      if(Vax == 'Y' || Vax == 'y')
+        if (state.Inf > Pop_ * 0.001) {
+          if (VaxStart <= i && VaxStart + VaxMax > i) {
+            NewVax = (state.Susc + newstate.NewSusc - NewInf) *
+                     newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
+          } else if (VaxStart + VaxMax <= i) {
+            NewVax = (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
+          }
+        } else {
+          NewVax = 0;
+        } else {
+          NewVax = 0;
         }
-      } else {
-        NewVax = 0;
-      }
 
       state.Susc += newstate.NewSusc - NewInf - NewVax;
       state.Inf += NewInf - NewRec;

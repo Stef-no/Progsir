@@ -1,9 +1,9 @@
 #include "sir.hpp"
+#include "my_date.hpp"
+#include "sir_control_print.hpp"
 
 #include <iomanip>
 #include <iostream>
-
-#include "my_date.hpp"
 
 int main() {
   /*int Pop_, Inf_, Duration_;

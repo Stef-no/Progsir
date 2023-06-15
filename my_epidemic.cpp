@@ -1,10 +1,10 @@
 #include "my_epidemic.hpp"
+#include "my_date.hpp"
+#include "my_control_print.hpp"
 
 #include <iomanip>
 #include <iostream>
 #include <limits>
-
-#include "my_date.hpp"
 
 int main() {
   /*int Pop_, Inf_, Dead_, Heal_, Duration_, ImmDur_, PanStart_, VaxStart_,
@@ -297,7 +297,7 @@ int main() {
   Contagion epidemic{initial_state, DIVar_,     DIVarStart_, DIVarTime_,
                      ImmDur_,       bVar_,      bVarStart_,  bVarTime_,
                      gVar_,         gVarStart_, gVarTime_,   PanStart_,
-                     VaxStart_,     VaxMax_,    Previous_};
+                     Vax_, VaxStart_,     VaxMax_,    Previous_};
 
   std::vector<PandemicData> data = epidemic.generate_data(Duration_);
 
