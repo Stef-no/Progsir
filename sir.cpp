@@ -1,92 +1,92 @@
 #include "sir.hpp"
-#include "my_date.hpp"
-#include "sir_control_print.hpp"
 
 #include <iomanip>
 #include <iostream>
+#include <string>
+
+#include "my_date.hpp"
+#include "sir_control_print.hpp"
 
 int main() {
-  /*int Pop_, Inf_, Duration_;
-  double Beta_, Gamma_;  // so che Giacomini non apprezza
-
-  Pop_ = 1010;
-  Inf_ = 10;
-  Beta_ = 0.3;
-  Gamma_ = 0.05;
-  Duration_ = 10; */
- 
-  std::cout << "Nell'inserimento dei dati della pandemia si richiede di seguire le seguenti indicazioni: \n";
-  std::cout << "- i dati temporali e riguardanti la popolazione sono numeri interi e positivi; \n";
-  std::cout << "- gli indici sono numeri decimali compresi tra 0 e 1 (estremi inclusi). \n";
+  std::cout << "Nell'inserimento dei parametri della pandemia si richiede di "
+               "seguire le seguenti indicazioni: \n";
+  std::cout << "- i dati temporali e riguardanti la popolazione siano numeri "
+               "interi e positivi; \n";
+  std::cout << "- gli indici siano numeri decimali compresi tra 0 e 1 (estremi "
+               "inclusi); \n";
+  std::cout << "- il formato delle risposte, in caso affermativo, deve essere "
+               "Y/y mentre, in caso negativo, N/n. \n";
 
   std::cout << "Inserire \n";
-  int Pop_;
+  int Pop_ = 0;
   std::cout << "Popolazione totale:\t";
   std::cin >> Pop_;
   while (Pop_ <= 0) {
-    std::cout << " Population has to be > than 0.\n ";
+    std::cout << " La popolazione deve essere maggiore di 0.\n ";
     std::cin >> Pop_;
   }
 
-  int Inf_;
+  int Inf_ = 0;
   std::cout << "Popolazione infetta:\t";
   std::cin >> Inf_;
   while (Inf_ < 0 || Inf_ > Pop_) {
-    std::cout << " Inf's value has to be between 0 and Pop's value.\n ";
+    std::cout << " La popolazione infetta deve avere un valore compreso tra 0 "
+                 "e la popolazione totale.\n ";
     std::cin >> Inf_;
   }
 
-   int Rec_;
+  int Rec_ = 0;
   std::cout << "Popolazione rimossa:\t";
   std::cin >> Rec_;
   while (Rec_ < 0 || Rec_ > Pop_) {
-    std::cout << " Inf's value has to be between 0 and Pop's value.\n ";
+    std::cout << " La popolazione rimossa deve avere un valore compreso tra 0 "
+                 "e la popolazione totale.\n ";
     std::cin >> Rec_;
   }
 
-
-  double Beta_;
-  std::cout << "Indice di contagiosità:\t";
+  std::string BetaMin = u8"\u03B2";
+  double Beta_ = 0.0;
+  std::cout << "Indice di contagiosità (" << BetaMin << "):\t";
   std::cin >> Beta_;
   while (Beta_ < 0 || Beta_ > 1) {
-    std::cout << " Beta's value has to be between 0 and 1.\n ";
+    std::cout << " L'indice di contagiosità deve avere un valore compreso tra "
+                 "0 e 1.\n ";
     std::cin >> Beta_;
   }
 
-  double Gamma_;
-  std::cout << "Indice di rimozione:\t";
+  std::string GammaMin = u8"\u03B3";
+  double Gamma_ = 0.0;
+  std::cout << "Indice di rimozione (" << GammaMin << "):\t";
   std::cin >> Gamma_;
   while (Gamma_ < 0 || Gamma_ > 1) {
-    std::cout << " Gamma's value has to be between 0 and 1.\n ";
+    std::cout
+        << " L'indice di rimozione deve avere un valore compreso tra 0 e 1.\n";
     std::cin >> Gamma_;
   }
 
-
-  int Duration_;
+  int Duration_ = 0;
   std::cout << "Durata simulazione:\t";
   std::cin >> Duration_;
   while (Duration_ <= 0) {
-    std::cout << " Duration has to be > than 0.\n ";
+    std::cout << " La durata deve essere maggiore di 0.\n ";
     std::cin >> Duration_;
   }
 
-
-  char View_;
+  char View_ = 'a';
   std::cout << "Vuoi vedere tutti i giorni in stampa?\t";
   std::cin >> View_;
   while (View_ != 'N' && View_ != 'Y' && View_ != 'n' && View_ != 'y') {
-    std::cout << " View has to be Y/n.\n ";
+    std::cout << " La risposta deve essere nel formato Y/n.\n ";
     std::cin >> View_;
   }
 
-  SirData initial_state{Pop_ - Inf_ - Rec_,
-                             Inf_,
-                             Rec_,
-                             };
-  
-  Simulation epidemic{initial_state,
-                             Beta_,
-                             Gamma_};
+  SirData initial_state{
+      Pop_ - Inf_ - Rec_,
+      Inf_,
+      Rec_,
+  };
+
+  Simulation epidemic{initial_state, Beta_, Gamma_};
   std::vector<SirData> data = epidemic.generate_data(Duration_);
   int d = 0;
   std::cout << '\n'
@@ -98,14 +98,14 @@ int main() {
             << "|" << std::setw(12) << "Rimozione  "
             << "|" << std::setw(12) << "Popolation "
             << "|\n"
-            << "---------------------------------------------------------------" 
+            << "---------------------------------------------------------------"
                "-------------------------"
             << '\n';
 
   if (View_ == 'Y' || View_ == 'y') {
     while (d <= Duration_) {
-      control_print(d, data[d].Susc, data[d].Inf,data[d].Rec,
-                    Beta_, Gamma_, Pop_);
+      control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_, Gamma_,
+                    Pop_);
       ++d;
     }
   } else if (View_ == 'N' || View_ == 'n') {
@@ -123,16 +123,16 @@ int main() {
     switch (a) {
       case 'x':
         while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
-                        Beta_, Gamma_, Pop_);
+          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_,
+                        Gamma_, Pop_);
           ++d;
         }
         break;
 
       case 'y':
         while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
-                        Beta_, Gamma_, Pop_);
+          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_,
+                        Gamma_, Pop_);
           d += 10;
           if (d > Duration_ && d != Duration_ + 10) {
             control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
@@ -143,8 +143,8 @@ int main() {
 
       case 'z':
         while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec,
-                        Beta_, Gamma_, Pop_);
+          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_,
+                        Gamma_, Pop_);
           d += 20;
           if (d > Duration_ && d != Duration_ + 20) {
             control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
@@ -164,8 +164,3 @@ int main() {
             << ConvToString(ldt->tm_mon) << ' ' << 1900 + ldt->tm_year
             << std::endl;
 }
-// grafici (Sani, Infetti, Morti, Guariti, Suscettibili, (Vaccinati)).
-// variazioni automatiche b, g || variazioni predefinite in momenti
-// giaco-defined (eventualmente con slider). Molto eventualmente mappa.
-// aggiunta varianti tramite variabile (sigma) in base alle variazioni di b e g
-// con spostamento di tutti i guariti nei suscettibili fino a (20) giorni prima.

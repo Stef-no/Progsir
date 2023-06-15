@@ -3,8 +3,7 @@
 
 #include "sir.hpp"
 
-bool operator==(const std::vector<SirData> a,
-                const std::vector<SirData> b) {
+bool operator==(const std::vector<SirData> a, const std::vector<SirData> b) {
   bool res = true;
   int i = 0;
   for (auto it = a.begin(), end = a.end(); it != end; it++) {

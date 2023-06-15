@@ -7,69 +7,41 @@
 #include <iostream>
 #include <vector>
 
-// cambiare if riga 47 di Previous 's' con y e n
-
 struct PandemicData {
-  int Susc;
-  int Inf;
-  int Dead;
-  int Heal;
-  int Rec;
-  int NewSusc;
-  double Beta;
-  double Gamma;
-  double DeadIndex;
-  double VaxIndex;
+  int Susc;          // Popolazione suscettibile
+  int Inf;           // Popolazione infetta
+  int Dead;          // Popolazione morta
+  int Heal;          // Popolazione guarita
+  int Rec;           // Popolazione rimossa
+  int NewSusc;       // Nuovi suscettibili
+  double Beta;       // Indice di contagione
+  double Gamma;      // Indice di rimozione
+  double DeadIndex;  // Indice di mortalità
+  double VaxIndex;   // Indice di vaccinazione
 };
-/*
-void control_print(int day, int susc, int inf, int dead, int heal, int rec,
-                   int newsusc, double beta, double gamma, double deadindex,
-                   double vaxindex, int pop) {
-  assert(susc >= 0 && susc <= pop);
-  assert(inf >= 0 && inf <= pop);
-  assert(rec >= 0 && rec <= pop);
-  assert(dead >= 0 && dead <= pop);
-  assert(heal >= 0 && heal <= pop);
-  assert(newsusc >= 0 && newsusc <= pop);
-  assert(heal >= 0 && heal <= rec);
-  assert(dead >= 0 && dead <= rec);
-  assert(deadindex >= 0 && deadindex <= 1);
-  assert(vaxindex >= 0 && vaxindex <= 1);
-  assert(beta >= 0 && beta <= 1);
-  assert(gamma >= 0 && gamma <= 1);
-  assert(pop == susc + inf + rec);
-  assert(rec == heal + dead);
-  assert(day >= 0);
 
-  std::cout << std::setw(9) << day << "|" << std::setw(12) << susc << "|"
-            << std::setw(12) << inf << "|" << std::setw(12) << dead << "|"
-            << std::setw(12) << heal << "|" << std::setw(12) << rec << "|"
-            << std::setw(12) << newsusc << "|" << std::setw(12) << beta << "|"
-            << std::setw(12) << gamma << "|" << std::setw(12) << deadindex
-            << "|" << std::setw(12) << vaxindex << "|" << std::setw(12) << pop
-            << "|\n";
-}
-*/
 class Contagion {
  private:
   PandemicData newstate;
-  char DIVar;
-  int DIVarStart;
-  int DIVarTime;
-  int ImmDur;
-  char bVar;
-  int bVarStart;
-  int bVarTime;
-  char gVar;
-  int gVarStart;
-  int gVarTime;
-  int PanStart;
-  char Vax;
-  int VaxStart;
-  int VaxMax;
-  char Previous;
+  char DIVar;      // Varia mortalità?
+  int DIVarStart;  // Giorno inizio variazione mortalità
+  int DIVarTime;   // Tempo di dimezzamento mortalità
+  int ImmDur;      // Durata immunità dei guariti
+  char bVar;       // Varia beta?
+  int bVarStart;   // Giorno inizio variazione beta
+  int bVarTime;    // Tempo di dimezzamento di beta
+  char gVar;       // Varia gamma?
+  int gVarStart;   // Giorno inizio variazione gamma
+  int gVarTime;    // Tempo di dimezzamento di 1-gamma
+  int PanStart;    // Giorni di Pandemia già trascorsi
+  char Vax;        // Vaccini?
+  int VaxStart;    // Giorno inizio vaccini
+  int VaxMax;      // Giorni per raggiungere massima velocità di vaccinazione
+  char Previous;   // Pandemia già in corso?
 
  public:
+  // Le variabili in Contagion corrispondo alle sigle delle variabili
+  // inizializzate nella parte privata
   Contagion(PandemicData& initial_state, char div, int divs, int divt, int id,
             char bv, int bvs, int bvt, char gv, int gvs, int gvt, int ps,
             char v, int vs, int vm, char p)
@@ -93,8 +65,6 @@ class Contagion {
   std::vector<PandemicData> generate_data(int Duration_) {
     std::vector<PandemicData> result{newstate};
     PandemicData state = result.back();
-
-    // double vi = state.VaxIndex;
 
     for (int i = 0; i < Duration_; ++i) {
       int Pop_ = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
@@ -131,7 +101,7 @@ class Contagion {
           if (gVar == 'Y' || gVar == 'y') {
             double exponentialgY =
                 std::exp((gVarStart - PanStart - i) * log(2) / gVarTime);
-            state.Gamma = 1 - ((1- result[0].Gamma) * exponentialgY);
+            state.Gamma = 1 - ((1 - result[0].Gamma) * exponentialgY);
           } else if (gVar == 'N' || gVar == 'n') {
             state.Gamma = result[0].Gamma;
           };
@@ -168,7 +138,7 @@ class Contagion {
           if (gVar == 'Y' || gVar == 'y') {
             double exponentialgY =
                 std::exp((gVarStart - i) * log(2) / gVarTime);
-            state.Gamma = 1 - (( 1 - result[0].Gamma) * exponentialgY);
+            state.Gamma = 1 - ((1 - result[0].Gamma) * exponentialgY);
           } else if (gVar == 'N' || gVar == 'n') {
             state.Gamma = result[0].Gamma;
           };
@@ -177,26 +147,28 @@ class Contagion {
         }
       };
 
-      if (i > ImmDur) {  // giorno 1, 0 i guariti -> inutile
+      if (i > ImmDur) { 
         int j = i - ImmDur;
         newstate.NewSusc =
             result[j].Heal - result[j - 1].Heal + result[j].NewSusc;
       }
 
       int NewVax = 0;
-      if(Vax == 'Y' || Vax == 'y')
+      if (Vax == 'Y' || Vax == 'y')
         if (state.Inf > Pop_ * 0.001) {
           if (VaxStart <= i && VaxStart + VaxMax > i) {
             NewVax = (state.Susc + newstate.NewSusc - NewInf) *
                      newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
           } else if (VaxStart + VaxMax <= i) {
-            NewVax = (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
+            NewVax =
+                (state.Susc + newstate.NewSusc - NewVax) * newstate.VaxIndex;
           }
         } else {
           NewVax = 0;
-        } else {
-          NewVax = 0;
         }
+      else {
+        NewVax = 0;
+      }
 
       state.Susc += newstate.NewSusc - NewInf - NewVax;
       state.Inf += NewInf - NewRec;
@@ -205,14 +177,10 @@ class Contagion {
       state.Heal += NewRec - NewDead + NewVax - newstate.NewSusc;
       state.NewSusc = newstate.NewSusc;
 
-      result.push_back(state);  // vengono immagazzinati tutti i valori di state
-                                // giorno per giorno
+      result.push_back(state);  
     }
     return result;
   }
 };
 
 #endif
-
-// aggiungere giorni mancanti che fa il conto alla rovescia, utile per i doctest
-// mettere le nascite
