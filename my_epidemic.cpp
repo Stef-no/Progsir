@@ -512,23 +512,23 @@ int main() {
       if (std::cin.fail()) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cerr << "Il numero dei morti deve essere intero e compreso tra 0 e "
-                  << Pop_ - Inf_
-                  << ", in base ai dati inseriti in precedenza.\n";
+        std::cerr
+            << "Il numero dei morti deve essere intero e compreso tra 0 e "
+            << Pop_ - Inf_ << ", in base ai dati inseriti in precedenza.\n";
       } else if (std::cin.peek() == '.' || std::cin.peek() == ',') {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cerr << "Il numero dei morti deve essere intero e compreso tra 0 e "
-                  << Pop_ - Inf_
-                  << ", in base ai dati inseriti in precedenza.\n";
+        std::cerr
+            << "Il numero dei morti deve essere intero e compreso tra 0 e "
+            << Pop_ - Inf_ << ", in base ai dati inseriti in precedenza.\n";
       } else if (Dead_ >= 0 && Dead_ <= Pop_ - Inf_) {
         break;
       } else {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cerr << "Il numero dei morti deve essere intero e compreso tra 0 e "
-                  << Pop_ - Inf_
-                  << ", in base ai dati inseriti in precedenza.\n";
+        std::cerr
+            << "Il numero dei morti deve essere intero e compreso tra 0 e "
+            << Pop_ - Inf_ << ", in base ai dati inseriti in precedenza.\n";
       }
     }
     while (true) {
@@ -537,23 +537,26 @@ int main() {
       if (std::cin.fail()) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cerr << "Il numero dei guariti deve essere intero e compreso tra 0 e "
-                  << Pop_ - Inf_ - Dead_
-                  << ", in base ai dati inseriti in precedenza.\n";
+        std::cerr
+            << "Il numero dei guariti deve essere intero e compreso tra 0 e "
+            << Pop_ - Inf_ - Dead_
+            << ", in base ai dati inseriti in precedenza.\n";
       } else if (std::cin.peek() == '.' || std::cin.peek() == ',') {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cerr << "Il numero dei guariti deve essere intero e compreso tra 0 e "
-                  << Pop_ - Inf_ - Dead_
-                  << ", in base ai dati inseriti in precedenza.\n";
+        std::cerr
+            << "Il numero dei guariti deve essere intero e compreso tra 0 e "
+            << Pop_ - Inf_ - Dead_
+            << ", in base ai dati inseriti in precedenza.\n";
       } else if (Heal_ > 0 && Heal_ <= Pop_ - Inf_ - Dead_) {
         break;
       } else {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cerr << "Il numero dei guariti deve essere intero e compreso tra 0 e "
-                  << Pop_ - Inf_ - Dead_
-                  << ", in base ai dati inseriti in precedenza.\n";
+        std::cerr
+            << "Il numero dei guariti deve essere intero e compreso tra 0 e "
+            << Pop_ - Inf_ - Dead_
+            << ", in base ai dati inseriti in precedenza.\n";
       }
     }
   }
