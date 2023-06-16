@@ -2,13 +2,14 @@
 
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <string>
 
 #include "my_date.hpp"
 #include "sir_control_print.hpp"
 
 int main() {
-  std::cout << "Nell'inserimento dei parametri della pandemia si richiede di "
+  std::cout << "\nNell'inserimento dei parametri della pandemia si richiede di "
                "seguire le seguenti indicazioni: \n";
   std::cout << "- i dati temporali e riguardanti la popolazione siano numeri "
                "interi e positivi; \n";
@@ -17,67 +18,112 @@ int main() {
   std::cout << "- il formato delle risposte, in caso affermativo, deve essere "
                "Y/y mentre, in caso negativo, N/n. \n";
 
-  std::cout << "Inserire \n";
+  std::cout << "\nInserire \n";
   int Pop_ = 0;
-  std::cout << "Popolazione totale:\t";
-  std::cin >> Pop_;
-  while (Pop_ <= 0) {
-    std::cout << " La popolazione deve essere maggiore di 0.\n ";
+  while (true) {
+    std::cout << "Popolazione totale:\t";
     std::cin >> Pop_;
+    if (Pop_ > 0) {
+      break;
+    } else {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "La popolazione deve avere un valore intero maggiore di 0.\n";
+    }
   }
 
   int Inf_ = 0;
-  std::cout << "Popolazione infetta:\t";
-  std::cin >> Inf_;
-  while (Inf_ < 0 || Inf_ > Pop_) {
-    std::cout << " La popolazione infetta deve avere un valore compreso tra 0 "
-                 "e la popolazione totale.\n ";
+  while (true) {
+    std::cout << "Popolazione infetta:\t";
     std::cin >> Inf_;
+    if (Inf_ > 0 && Inf_ <= Pop_) {
+      break;
+    } else {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr
+          << "La popolazione infetta deve avere un valore intero compreso tra 1 e "
+          << Pop_ << ".\n";
+    }
   }
 
   int Rec_ = 0;
-  std::cout << "Popolazione rimossa:\t";
-  std::cin >> Rec_;
-  while (Rec_ < 0 || Rec_ > Pop_) {
-    std::cout << " La popolazione rimossa deve avere un valore compreso tra 0 "
-                 "e la popolazione totale.\n ";
+
+  while (true) {
+    std::cout << "Popolazione rimossa:\t";
     std::cin >> Rec_;
+    if (std::cin.fail()) {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr
+          << "La popolazione rimossa deve avere un valore intero compreso tra 0 e "
+          << Pop_ - Inf_ << ".\n ";
+    } else if (Rec_ >= 0 && Rec_ <= Pop_ - Inf_) {
+      break;
+    } else {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr
+          << "La popolazione rimossa deve avere un valore intero compreso tra 0 e "
+          << Pop_ - Inf_ << ".\n ";
+    }
   }
 
   std::string BetaMin = u8"\u03B2";
   double Beta_ = 0.0;
-  std::cout << "Indice di contagiosità (" << BetaMin << "):\t";
-  std::cin >> Beta_;
-  while (Beta_ < 0 || Beta_ > 1) {
-    std::cout << " L'indice di contagiosità deve avere un valore compreso tra "
-                 "0 e 1.\n ";
+  while (true) {
+    std::cout << "Indice di contagiosità (" << BetaMin << "):\t";
     std::cin >> Beta_;
+    if (Beta_ > 0 && Beta_ <= 1) {  // se si include lo 0 dà problemi
+      break;
+    } else {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "L'indice di contagiosità " << BetaMin
+                << " deve avere un valore compreso tra 0 e 1.\n";
+    }
   }
 
   std::string GammaMin = u8"\u03B3";
   double Gamma_ = 0.0;
-  std::cout << "Indice di rimozione (" << GammaMin << "):\t";
-  std::cin >> Gamma_;
-  while (Gamma_ < 0 || Gamma_ > 1) {
-    std::cout
-        << " L'indice di rimozione deve avere un valore compreso tra 0 e 1.\n";
+  while (true) {
+    std::cout << "Indice di rimozione (" << GammaMin << "):\t";
     std::cin >> Gamma_;
+    if (Gamma_ > 0 && Gamma_ <= 1) {
+      break;
+    } else {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "L'indice di rimozione " << GammaMin
+                << " deve avere un valore compreso tra 0 e 1.\n";
+    }
   }
 
   int Duration_ = 0;
-  std::cout << "Durata simulazione:\t";
-  std::cin >> Duration_;
-  while (Duration_ <= 0) {
-    std::cout << " La durata deve essere maggiore di 0.\n ";
+  while (true) {
+    std::cout << "Durata simulazione:\t";
     std::cin >> Duration_;
+    if (Duration_ > 0) {
+      break;
+    } else {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "La durata della simulazione deve essere un numero intero "
+                   "positivo.\n";
+    }
   }
 
   char View_ = 'a';
-  std::cout << "Vuoi vedere tutti i giorni in stampa?\t";
-  std::cin >> View_;
-  while (View_ != 'N' && View_ != 'Y' && View_ != 'n' && View_ != 'y') {
-    std::cout << " La risposta deve essere nel formato Y/n.\n ";
+  while (true) {
+    std::cout << "Vuoi vedere tutti i giorni in stampa?\t";
     std::cin >> View_;
+    if (View_ == 'N' || View_ == 'n' || View_ == 'Y' || View_ == 'y') {
+      break;
+    } else {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "La risposta deve essere nel formato Y/n.\n";
+    }
   }
 
   SirData initial_state{
