@@ -28,9 +28,9 @@ class Simulation {
     SirData state = result.back();
 
     for (int i = 0; i < Duration_; ++i) {
-      int Pop_ = newstate.Susc + newstate.Inf + newstate.Rec;
+      int Pop = newstate.Susc + newstate.Inf + newstate.Rec;
       int NewRec = std::round(Gamma * state.Inf);
-      int NewInf = std::round(Beta / Pop_ * state.Susc * state.Inf);
+      int NewInf = std::round(Beta / Pop * state.Susc * state.Inf);
 
       state.Susc = state.Susc - NewInf;
       state.Inf += NewInf - NewRec;

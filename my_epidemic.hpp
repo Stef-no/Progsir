@@ -67,9 +67,9 @@ class Contagion {
     PandemicData state = result.back();
 
     for (int i = 0; i < Duration_; ++i) {
-      int Pop_ = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
+      int Pop = newstate.Susc + newstate.Inf + newstate.Dead + newstate.Heal;
       int NewRec = std::round(newstate.Gamma * state.Inf);
-      int NewInf = std::round(newstate.Beta / Pop_ * state.Susc * state.Inf);
+      int NewInf = std::round(newstate.Beta / Pop * state.Susc * state.Inf);
       int NewDead = std::round(NewRec * newstate.DeadIndex);
 
       if (Previous == 'Y' || Previous == 'y') {
@@ -155,7 +155,7 @@ class Contagion {
 
       int NewVax = 0;
       if (Vax == 'Y' || Vax == 'y')
-        if (state.Inf > Pop_ * 0.001) {
+        if (state.Inf > Pop * 0.001) {
           if (VaxStart <= i && VaxStart + VaxMax > i) {
             NewVax = (state.Susc + newstate.NewSusc - NewInf) *
                      newstate.VaxIndex * ((i - VaxStart + 1.0) / VaxMax);
