@@ -579,6 +579,30 @@ int main() {
     }
   }
 
+  int Interval_ = 1;
+
+  if (View_ == 'N' || View_ == 'n') {
+    while (true) {
+      std::cout << "Intervallo di stampa:\t";
+      std::cin >> Interval_;
+      if (std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cerr << "L'intervallo deve essere intero positivo.\n";
+      } else if (std::cin.peek() == '.' || std::cin.peek() == ',') {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cerr << "L'intervallo deve essere intero positivo.\n";
+      } else if (Interval_ > 0) {
+        break;
+      } else {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cerr << "L'intervallo deve essere intero positivo.\n";
+      }
+    }
+  }
+
   PandemicData initial_state{Pop_ - Inf_ - Dead_ - Heal_,
                              Inf_,
                              Dead_,
@@ -618,71 +642,17 @@ int main() {
                "---------------------------"
             << '\n';
 
-  if (View_ == 'Y' || View_ == 'y') {
-    while (d <= Duration_) {
-      control_print(d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal,
-                    data[d].Rec, data[d].NewSusc, data[d].Beta, data[d].Gamma,
-                    data[d].DeadIndex, data[d].VaxIndex, Pop_);
-      ++d;
-    }
-  } else if (View_ == 'N' || View_ == 'n') {
-    char a = ' ';
-    if (Duration_ <= 150) {
-      a = 'x';
-    } else if (Duration_ <= 500) {
-      a = 'y';
-    } else {
-      a = 'z';
-    }
-
-    std::cout.precision(3);
-
-    switch (a) {
-      case 'x':
-        while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Dead,
-                        data[d].Heal, data[d].Rec, data[d].NewSusc,
-                        data[d].Beta, data[d].Gamma, data[d].DeadIndex,
-                        data[d].VaxIndex, Pop_);
-          ++d;
-        }
-        break;
-
-      case 'y':
-        while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Dead,
-                        data[d].Heal, data[d].Rec, data[d].NewSusc,
-                        data[d].Beta, data[d].Gamma, data[d].DeadIndex,
-                        data[d].VaxIndex, Pop_);
-          d += 10;
-          if (d > Duration_ && d != Duration_ + 10) {
-            control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Dead, data[Duration_].Heal,
-                          data[Duration_].Rec, data[Duration_].NewSusc,
-                          data[Duration_].Beta, data[Duration_].Gamma,
-                          data[Duration_].DeadIndex, data[Duration_].VaxIndex,
-                          Pop_);
-          }
-        }
-        break;
-
-      case 'z':
-        while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Dead,
-                        data[d].Heal, data[d].Rec, data[d].NewSusc,
-                        data[d].Beta, data[d].Gamma, data[d].DeadIndex,
-                        data[d].VaxIndex, Pop_);
-          d += 20;
-          if (d > Duration_ && d != Duration_ + 20) {
-            control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Dead, data[Duration_].Heal,
-                          data[Duration_].Rec, data[Duration_].NewSusc,
-                          data[Duration_].Beta, data[Duration_].Gamma,
-                          data[Duration_].DeadIndex, data[Duration_].VaxIndex,
-                          Pop_);
-          }
-        }
-        break;
+  while (d <= Duration_) {
+    control_print(d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal,
+                  data[d].Rec, data[d].NewSusc, data[d].Beta, data[d].Gamma,
+                  data[d].DeadIndex, data[d].VaxIndex, Pop_);
+    d += Interval_;
+    if (d > Duration_ && d != Duration_ + Interval_) {
+      control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
+                    data[Duration_].Dead, data[Duration_].Heal,
+                    data[Duration_].Rec, data[Duration_].NewSusc,
+                    data[Duration_].Beta, data[Duration_].Gamma,
+                    data[Duration_].DeadIndex, data[Duration_].VaxIndex, Pop_);
     }
   }
 

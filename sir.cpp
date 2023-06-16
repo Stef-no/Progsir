@@ -28,7 +28,8 @@ int main() {
     } else {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      std::cerr << "La popolazione deve avere un valore intero maggiore di 0.\n";
+      std::cerr
+          << "La popolazione deve avere un valore intero maggiore di 0.\n";
     }
   }
 
@@ -41,9 +42,9 @@ int main() {
     } else {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      std::cerr
-          << "La popolazione infetta deve avere un valore intero compreso tra 1 e "
-          << Pop_ << ".\n";
+      std::cerr << "La popolazione infetta deve avere un valore intero "
+                   "compreso tra 1 e "
+                << Pop_ << ".\n";
     }
   }
 
@@ -55,17 +56,17 @@ int main() {
     if (std::cin.fail()) {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      std::cerr
-          << "La popolazione rimossa deve avere un valore intero compreso tra 0 e "
-          << Pop_ - Inf_ << ".\n ";
+      std::cerr << "La popolazione rimossa deve avere un valore intero "
+                   "compreso tra 0 e "
+                << Pop_ - Inf_ << ".\n ";
     } else if (Rec_ >= 0 && Rec_ <= Pop_ - Inf_) {
       break;
     } else {
       std::cin.clear();
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      std::cerr
-          << "La popolazione rimossa deve avere un valore intero compreso tra 0 e "
-          << Pop_ - Inf_ << ".\n ";
+      std::cerr << "La popolazione rimossa deve avere un valore intero "
+                   "compreso tra 0 e "
+                << Pop_ - Inf_ << ".\n ";
     }
   }
 
@@ -126,6 +127,30 @@ int main() {
     }
   }
 
+  int Interval_ = 1;
+
+  if (View_ == 'N' || View_ == 'n') {
+    while (true) {
+      std::cout << "Intervallo di stampa:\t";
+      std::cin >> Interval_;
+      if (std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cerr << "L'intervallo deve essere intero positivo.\n";
+      } else if (std::cin.peek() == '.' || std::cin.peek() == ',') {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cerr << "L'intervallo deve essere intero positivo.\n";
+      } else if (Interval_ > 0) {
+        break;
+      } else {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cerr << "L'intervallo deve essere intero positivo.\n";
+      }
+    }
+  }
+
   SirData initial_state{
       Pop_ - Inf_ - Rec_,
       Inf_,
@@ -147,60 +172,15 @@ int main() {
             << "---------------------------------------------------------------"
                "-------------------------"
             << '\n';
-
-  if (View_ == 'Y' || View_ == 'y') {
-    while (d <= Duration_) {
-      control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_, Gamma_,
-                    Pop_);
-      ++d;
-    }
-  } else if (View_ == 'N' || View_ == 'n') {
-    char a = ' ';
-    if (Duration_ <= 150) {
-      a = 'x';
-    } else if (Duration_ <= 500) {
-      a = 'y';
-    } else {
-      a = 'z';
-    }
-
-    std::cout.precision(3);
-
-    switch (a) {
-      case 'x':
-        while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_,
-                        Gamma_, Pop_);
-          ++d;
-        }
-        break;
-
-      case 'y':
-        while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_,
-                        Gamma_, Pop_);
-          d += 10;
-          if (d > Duration_ && d != Duration_ + 10) {
-            control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Rec, Beta_, Gamma_, Pop_);
-          }
-        }
-        break;
-
-      case 'z':
-        while (d <= Duration_) {
-          control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_,
-                        Gamma_, Pop_);
-          d += 20;
-          if (d > Duration_ && d != Duration_ + 20) {
-            control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                          data[Duration_].Rec, Beta_, Gamma_, Pop_);
-          }
-        }
-        break;
+  while (d <= Duration_) {
+    control_print(d, data[d].Susc, data[d].Inf, data[d].Rec, Beta_, Gamma_,
+                  Pop_);
+    d += Interval_;
+    if (d > Duration_ && d != Duration_ + Interval_) {
+      control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
+                    data[Duration_].Rec, Beta_, Gamma_, Pop_);
     }
   }
-
   std::cout << "---------------------------------------------------------------"
                "-------------------------\n";
 
