@@ -3,7 +3,7 @@
 
 #include "my_epidemic.hpp"
 
-bool operator==(const std::vector<PandemicData> a,
+inline bool operator==(const std::vector<PandemicData> a,
                 const std::vector<PandemicData> b) {
   bool res = true;
   int i = 0;

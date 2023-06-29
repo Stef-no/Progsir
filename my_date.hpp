@@ -3,9 +3,9 @@
 
 #include <ctime>
 #include <vector>
+#include <string>
 
 time_t now;
-int d = 0;
 
 int ConvToSec(int days) {
   int sec;

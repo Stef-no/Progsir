@@ -614,10 +614,12 @@ int main() {
                              DeadIndex_,
                              VaxIndex_};
 
-  Contagion epidemic{initial_state, DIVar_,     DIVarStart_, DIVarTime_,
-                     ImmDur_,       bVar_,      bVarStart_,  bVarTime_,
-                     gVar_,         gVarStart_, gVarTime_,   PanStart_,
-                     Vax_,          VaxStart_,  VaxMax_,     Previous_};
+  VarIndex D_I{DIVar_, DIVarStart_, DIVarTime_};
+  VarIndex B_eta{bVar_, bVarStart_, bVarTime_};
+  VarIndex G_amma{gVar_, gVarStart_, gVarTime_};
+  VarIndex V_ax{Vax_, VaxStart_, VaxMax_};
+
+  Contagion epidemic{initial_state, D_I, B_eta, G_amma, V_ax, ImmDur_, PanStart_};
 
   std::vector<PandemicData> data = epidemic.generate_data(Duration_);
 
