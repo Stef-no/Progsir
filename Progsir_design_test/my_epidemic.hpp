@@ -8,7 +8,28 @@
 #include <vector>
 
 namespace epidemic {
+/*
+struct Index {
+  double Beta;      // Indice di contagione
+  double Gamma;     // Indice di rimozione
+  double DeadIndex; // Indice di mortalità
+  double VaxIndex;  // Indice di vaccinazione
+};
 
+struct PopulationData{
+  int Susc;         // Popolazione suscettibile
+  int Inf;          // Popolazione infetta
+  int Dead;         // Popolazione morta
+  int Heal;         // Popolazione guarita
+  int Rec;          // Popolazione rimossa
+  int NewSusc;      // Nuovi suscettibili
+};
+
+struct PandemicData {
+  PopulationData PanPop;
+  Index PanIndex;
+};
+*/
 struct PandemicData {
   int Susc;         // Popolazione suscettibile
   int Inf;          // Popolazione infetta

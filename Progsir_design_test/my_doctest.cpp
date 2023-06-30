@@ -1,9 +1,11 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#define DOCTEST_CONFIG_SUPER_FAST_ASSERTS
 #include <vector>
 
 #include "doctest.h"
 #include "my_epidemic.hpp"
 #include "my_operator.hpp"
+#include "my_control_print.hpp"
 
 TEST_CASE("Testing struct PandemicData") {
   PandemicData test_pd = {1000, 10, 5, 3, 2, 0, 0.5, 0.8, 0.5, 0.1};
@@ -45,19 +47,27 @@ TEST_CASE("Contagion generate_data returns the expected results") {
   auto result = test_cont.generate_data(duration);
   CHECK(operator==(result, expected_data));
 }
-/*TEST_CASE("Crazy test") {
-  PandemicData initial_state{10, 10, 0, 0, 0, 0, 0.3, 0.05, 0.5, 0};
+
+TEST_CASE("Beta test") {
+  PandemicData initial_state{10, 10, 0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0};
   VarIndex test_di{'n', 0, 0};
   VarIndex test_beta{'n', 0, 0};
   VarIndex test_gamma{'n', 0, 0};
   VarIndex test_vax{'n', 0, 0};
   Contagion test_cont{initial_state, test_di, test_beta, test_gamma,
                       test_vax,      1,       0};
-  int duration{10};
-  std::vector<PandemicData> expected_data {
-    {10, 1, 0, 0, 0, 0, 0.1, 0.0, 1., 0}, {10, 0, 1, 0, 1, 0, 0.1, 0.0, 1., 0},
+  int duration_1{1};
+  std::vector<PandemicData> expected_data{
+      {10, 10, 0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0},
+      {5, 15, 0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0},
+  };
+  auto result = test_cont.generate_data(duration_1);
+  CHECK(operator==(result, expected_data));
+}
 
-        auto result = test_cont.generate_data(duration);
-    CHECK(operator==(result, expected_data));
-  }
-}*/
+/*
+TEST_CASE("Control print day test") {
+  DOCTEST_REQUIRE_THROWS_WITH_AS(control_print(-4,4,4,1,1,2,0,0.1,0.4,0.6,0.3,10), "I giorni devono avere valore positivo", std::logic_error);
+}
+*/
+

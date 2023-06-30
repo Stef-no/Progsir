@@ -20,7 +20,7 @@ inline void control_print(int day, int susc, int inf, int dead, int heal, int re
   assert(gamma >= 0 && gamma <= 1);
   assert(pop == susc + inf + rec);
   assert(rec == heal + dead);
-  assert(day >= 0);
+  assert(day >= 0 && "I giorni devono avere valore positivo");
 
   std::cout << std::setw(9) << day << "|" << std::setw(12) << susc << "|"
             << std::setw(12) << inf << "|" << std::setw(12) << dead << "|"
