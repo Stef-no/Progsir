@@ -5,7 +5,7 @@
 
 #include "my_epidemic.hpp"
 
-void control_print(int day, int susc, int inf, int rec, double beta,
+inline void control_print(int day, int susc, int inf, int rec, double beta,
                    double gamma, int pop) {
   assert(susc >= 0 && susc <= pop);
   assert(inf >= 0 && inf <= pop);
