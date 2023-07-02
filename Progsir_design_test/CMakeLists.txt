@@ -19,8 +19,9 @@ string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra")
 string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fsanitize=address,undefined " "-fno-omit-frame-pointer")
 string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined " "-fno-omit-frame-pointer")
 
-add_executable(my_epidemic my_epidemic.cpp my_main.cpp)
-add_executable(sir_epidemic sir_epidemic.cpp sir_main.cpp)
+add_executable(epidemic my_epidemic.cpp sir_epidemic.cpp main.cpp)
+# add_executable(my_epidemic my_epidemic.cpp my_main.cpp)
+# add_executable(sir_epidemic sir_epidemic.cpp sir_main.cpp)
 
 #se il testing e' abilitato...
 #per disabilitare il testing, \passare - DBUILD_TESTING = OFF a cmake durante la fase di configurazione
