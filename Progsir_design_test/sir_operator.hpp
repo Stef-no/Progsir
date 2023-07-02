@@ -2,6 +2,7 @@
 #define SIR_OPERATOR_HPP
 
 #include "sir.hpp"
+#include "sir.cpp"
 
 bool operator==(const std::vector<SirData> a, const std::vector<SirData> b) {
   bool res = true;

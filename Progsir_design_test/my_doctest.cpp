@@ -3,9 +3,9 @@
 #include <vector>
 
 #include "doctest.h"
+#include "my_date.hpp"
 #include "my_epidemic.hpp"
 #include "my_operator.hpp"
-#include "my_control_print.hpp"
 
 TEST_CASE("Testing struct PandemicData") {
   PandemicData test_pd = {1000, 10, 5, 3, 2, 0, 0.5, 0.8, 0.5, 0.1};
@@ -65,9 +65,23 @@ TEST_CASE("Beta test") {
   CHECK(operator==(result, expected_data));
 }
 
-/*
-TEST_CASE("Control print day test") {
-  DOCTEST_REQUIRE_THROWS_WITH_AS(control_print(-4,4,4,1,1,2,0,0.1,0.4,0.6,0.3,10), "I giorni devono avere valore positivo", std::logic_error);
+TEST_CASE("Test di FinalDate in my_date.hpp") {
+  auto test_day = FinalDate(0);
+  std::chrono::system_clock::time_point day_0 =
+      std::chrono::system_clock::now();
+  auto test_day_time = std::chrono::time_point_cast<std::chrono::seconds>(test_day);
+  auto day_0_time = std::chrono::time_point_cast<std::chrono::seconds>(day_0);
+  REQUIRE(test_day_time == day_0_time);
 }
-*/
+
+TEST_CASE("Test operatore == in my_operator.hpp") {
+  std::vector<PandemicData> data_1{
+      {-410, 10, 0, 0, 0, 0, 5.6, 0.0, 12.0, 0.0},
+      {5, 315, 0, 30, 0, 0, 1.0, 10.06, 0.0, 210.0},
+  };
+  std::vector<PandemicData> data_2{
+      {-410, 10, 0, 0, 0, 0, 5.6, 0.0, 12.0, 0.0},
+      {5, 315, 0, 30, 0, 0, 1.0, 10.06, 0.0, 210.0},
+  };
+}
 

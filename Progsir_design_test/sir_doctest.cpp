@@ -3,6 +3,7 @@
 
 #include "doctest.h"
 #include "sir.hpp"
+#include "sir.cpp"
 #include "sir_operator.hpp"
 
 TEST_CASE("Testing struct SirData") {
