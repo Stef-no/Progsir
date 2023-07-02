@@ -28,6 +28,10 @@ int main() {
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       std::cerr
           << "La popolazione deve avere un valore intero maggiore di 0.\n";
+    } else if (std::cin.peek() == '.' || std::cin.peek() == ',') {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "La popolazione deve avere un valore intero maggiore di 0.\n";
     } else if (Pop_ > 0) {
       break;
     } else {
