@@ -1,5 +1,5 @@
-#ifndef SIR_HPP
-#define SIR_HPP
+#ifndef SIR_EPIDEMIC_HPP
+#define SIR_EPIDEMIC_HPP
 
 #include <cassert>
 #include <cmath>
@@ -26,5 +26,5 @@ class Simulation {
 
   std::vector<SirData> generate_data(int);
 };
-}
+}  // namespace epidemic
 #endif

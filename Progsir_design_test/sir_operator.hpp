@@ -1,10 +1,10 @@
 #ifndef SIR_OPERATOR_HPP
 #define SIR_OPERATOR_HPP
 
-#include "sir.hpp"
-#include "sir.cpp"
+#include "sir_epidemic.hpp"
 
-bool operator==(const std::vector<SirData> a, const std::vector<SirData> b) {
+bool operator==(const std::vector<epidemic::SirData> a,
+                const std::vector<epidemic::SirData> b) {
   bool res = true;
   int i = 0;
   for (auto it = a.begin(), end = a.end(); it != end; it++) {

@@ -1,15 +1,11 @@
-#include "my_epidemic.hpp"
-
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <string>
-#include <iomanip>
 
+#include "date.hpp"
 #include "my_control_print.hpp"
-#include "my_date.hpp"
-
-using namespace epidemic;
+#include "my_epidemic.hpp"
 
 int main() {
   std::cout << "\nNell'inserimento dei dati della pandemia si richiede di "
@@ -79,7 +75,7 @@ int main() {
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       std::cerr << "L'indice di contagiosità " << BetaMin
                 << " deve avere un valore compreso tra 0 e 1.\n";
-    } else if (Beta_ > 0 && Beta_ <= 1) { // se si include lo 0 dà problemi
+    } else if (Beta_ > 0 && Beta_ <= 1) {  // se si include lo 0 dà problemi
       break;
     } else {
       std::cin.clear();
@@ -606,26 +602,26 @@ int main() {
     }
   }
 
-  PandemicData initial_state{Pop_ - Inf_ - Dead_ - Heal_,
-                             Inf_,
-                             Dead_,
-                             Heal_,
-                             Dead_ + Heal_,
-                             NewSusc_,
-                             Beta_,
-                             Gamma_,
-                             DeadIndex_,
-                             VaxIndex_};
+  epidemic::PandemicData initial_state{Pop_ - Inf_ - Dead_ - Heal_,
+                                       Inf_,
+                                       Dead_,
+                                       Heal_,
+                                       Dead_ + Heal_,
+                                       NewSusc_,
+                                       Beta_,
+                                       Gamma_,
+                                       DeadIndex_,
+                                       VaxIndex_};
 
-  VarIndex D_I{DIVar_, DIVarStart_, DIVarTime_};
-  VarIndex B_eta{bVar_, bVarStart_, bVarTime_};
-  VarIndex G_amma{gVar_, gVarStart_, gVarTime_};
-  VarIndex V_ax{Vax_, VaxStart_, VaxMax_};
+  epidemic::VarIndex D_I{DIVar_, DIVarStart_, DIVarTime_};
+  epidemic::VarIndex B_eta{bVar_, bVarStart_, bVarTime_};
+  epidemic::VarIndex G_amma{gVar_, gVarStart_, gVarTime_};
+  epidemic::VarIndex V_ax{Vax_, VaxStart_, VaxMax_};
 
-  Contagion epidemic{initial_state, D_I,     B_eta,    G_amma,
-                     V_ax,          ImmDur_, PanStart_};
+  epidemic::Contagion epidemic{initial_state, D_I,     B_eta,    G_amma,
+                               V_ax,          ImmDur_, PanStart_};
 
-  std::vector<PandemicData> data = epidemic.generate_data(Duration_);
+  std::vector<epidemic::PandemicData> data = epidemic.generate_data(Duration_);
 
   int d = 0;
 
@@ -666,19 +662,13 @@ int main() {
                "---------------------------------------------------------------"
                "---------------------------\n";
 
-  // now = time(0) + ConvToSec(Duration_);
-  // tm *ldt = localtime(&now);
-  // std::cout << "La simulazione termina il " << ldt->tm_mday << ' '
-  //           << ConvToString(ldt->tm_mon) << ' ' << 1900 + ldt->tm_year
-  //           << std::endl;
-
   auto final_date = FinalDate(Duration_);
   auto future_time = std::chrono::system_clock::to_time_t(final_date);
   auto future_tm = std::localtime(&future_time);
 
-  std::stringstream ss;
-  ss << std::put_time(future_tm, "%d-%m-%Y");
-  std::string future_date_str = ss.str();
+  std::stringstream s;
+  s << std::put_time(future_tm, "%d-%m-%Y");
+  std::string future_date_str = s.str();
 
   std::cout << "\nLa simulazione termina il " << future_date_str << "\n\n";
 }

@@ -1,14 +1,15 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #define DOCTEST_CONFIG_SUPER_FAST_ASSERTS
+#include "my_epidemic.hpp"
+
 #include <vector>
 
+#include "date.hpp"
 #include "doctest.h"
-#include "my_date.hpp"
-#include "my_epidemic.hpp"
 #include "my_operator.hpp"
 
 TEST_CASE("Testing struct PandemicData") {
-  PandemicData test_pd = {1000, 10, 5, 3, 2, 0, 0.5, 0.8, 0.5, 0.1};
+  epidemic::PandemicData test_pd = {1000, 10, 5, 3, 2, 0, 0.5, 0.8, 0.5, 0.1};
 
   CHECK(test_pd.Susc == 1000);
   CHECK(test_pd.Inf == 10);
@@ -23,15 +24,15 @@ TEST_CASE("Testing struct PandemicData") {
 }
 
 TEST_CASE("Contagion generate_data returns the expected results") {
-  PandemicData initial_state{990, 10, 0, 0, 0, 0, 0.3, 0.05, 0.5, 0};
-  VarIndex test_di{'n', 0, 0};
-  VarIndex test_beta{'n', 0, 0};
-  VarIndex test_gamma{'n', 0, 0};
-  VarIndex test_vax{'n', 0, 0};
-  Contagion test_cont{initial_state, test_di, test_beta, test_gamma,
-                      test_vax,      1,       0};
+  epidemic::PandemicData initial_state{990, 10, 0, 0, 0, 0, 0.3, 0.05, 0.5, 0};
+  epidemic::VarIndex test_di{'n', 0, 0};
+  epidemic::VarIndex test_beta{'n', 0, 0};
+  epidemic::VarIndex test_gamma{'n', 0, 0};
+  epidemic::VarIndex test_vax{'n', 0, 0};
+  epidemic::Contagion test_cont{initial_state, test_di, test_beta, test_gamma,
+                                test_vax,      1,       0};
   int duration{10};
-  std::vector<PandemicData> expected_data{
+  std::vector<epidemic::PandemicData> expected_data{
       {990, 10, 0, 0, 0, 0, 0.3, 0.05, 0.5, 0},
       {987, 12, 1, 0, 1, 0, 0.3, 0.05, 0.5, 0},
       {983, 15, 2, 0, 2, 0, 0.3, 0.05, 0.5, 0},
@@ -49,15 +50,15 @@ TEST_CASE("Contagion generate_data returns the expected results") {
 }
 
 TEST_CASE("Beta test") {
-  PandemicData initial_state{10, 10, 0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0};
-  VarIndex test_di{'n', 0, 0};
-  VarIndex test_beta{'n', 0, 0};
-  VarIndex test_gamma{'n', 0, 0};
-  VarIndex test_vax{'n', 0, 0};
-  Contagion test_cont{initial_state, test_di, test_beta, test_gamma,
-                      test_vax,      1,       0};
+  epidemic::PandemicData initial_state{10, 10, 0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0};
+  epidemic::VarIndex test_di{'n', 0, 0};
+  epidemic::VarIndex test_beta{'n', 0, 0};
+  epidemic::VarIndex test_gamma{'n', 0, 0};
+  epidemic::VarIndex test_vax{'n', 0, 0};
+  epidemic::Contagion test_cont{initial_state, test_di, test_beta, test_gamma,
+                                test_vax,      1,       0};
   int duration_1{1};
-  std::vector<PandemicData> expected_data{
+  std::vector<epidemic::PandemicData> expected_data{
       {10, 10, 0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0},
       {5, 15, 0, 0, 0, 0, 1.0, 0.0, 0.0, 0.0},
   };
@@ -69,19 +70,19 @@ TEST_CASE("Test di FinalDate in my_date.hpp") {
   auto test_day = FinalDate(0);
   std::chrono::system_clock::time_point day_0 =
       std::chrono::system_clock::now();
-  auto test_day_time = std::chrono::time_point_cast<std::chrono::seconds>(test_day);
+  auto test_day_time =
+      std::chrono::time_point_cast<std::chrono::seconds>(test_day);
   auto day_0_time = std::chrono::time_point_cast<std::chrono::seconds>(day_0);
   REQUIRE(test_day_time == day_0_time);
 }
 
 TEST_CASE("Test operatore == in my_operator.hpp") {
-  std::vector<PandemicData> data_1{
+  std::vector<epidemic::PandemicData> data_1{
       {-410, 10, 0, 0, 0, 0, 5.6, 0.0, 12.0, 0.0},
       {5, 315, 0, 30, 0, 0, 1.0, 10.06, 0.0, 210.0},
   };
-  std::vector<PandemicData> data_2{
+  std::vector<epidemic::PandemicData> data_2{
       {-410, 10, 0, 0, 0, 0, 5.6, 0.0, 12.0, 0.0},
       {5, 315, 0, 30, 0, 0, 1.0, 10.06, 0.0, 210.0},
   };
 }
-

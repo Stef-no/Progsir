@@ -3,10 +3,8 @@
 
 #include "my_epidemic.hpp"
 
-using namespace epidemic;
-
-inline bool operator==(const std::vector<PandemicData> a,
-                const std::vector<PandemicData> b) {
+inline bool operator==(const std::vector<epidemic::PandemicData> a,
+                       const std::vector<epidemic::PandemicData> b) {
   bool res = true;
   int i = 0;
   for (auto it = a.begin(), end = a.end(); it != end; it++) {

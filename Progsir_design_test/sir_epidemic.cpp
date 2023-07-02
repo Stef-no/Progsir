@@ -1,4 +1,4 @@
-#include "sir.hpp"
+#include "sir_epidemic.hpp"
 
 #include <iomanip>
 #include <iostream>
@@ -6,9 +6,8 @@
 #include <string>
 
 #include "sir_control_print.hpp"
-// #include "my_date.hpp"
 
-using namespace epidemic;
+namespace epidemic {
 
 Simulation::Simulation(SirData const& initial_state, const double beta,
                        const double gamma)
@@ -32,3 +31,4 @@ std::vector<SirData> Simulation::generate_data(int Duration_) {
   }
   return result;
 };
+}  // namespace epidemic

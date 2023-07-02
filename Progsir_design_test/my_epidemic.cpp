@@ -6,14 +6,18 @@
 #include <string>
 
 #include "my_control_print.hpp"
-// #include "my_date.hpp"
 
-using namespace epidemic;
+namespace epidemic {
 
 Contagion::Contagion(PandemicData const &initial_state, VarIndex const &di,
                      VarIndex const &b, VarIndex const &g, VarIndex const &vax,
                      const int id, const int ps)
-    : newstate(initial_state), DI(di), beta(b), gamma(g), Vax(vax), ImmDur(id),
+    : newstate(initial_state),
+      DI(di),
+      beta(b),
+      gamma(g),
+      Vax(vax),
+      ImmDur(id),
       PanStart(ps){};
 
 std::vector<PandemicData> Contagion::generate_data(int Duration_) {
@@ -105,3 +109,4 @@ std::vector<PandemicData> Contagion::generate_data(int Duration_) {
   }
   return result;
 };
+}  // namespace epidemic

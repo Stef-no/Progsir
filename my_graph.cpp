@@ -299,7 +299,7 @@ int main() {
 
   std::vector<PandemicData> data = graph.generate_data(Duration_);
 
-  //sf::RenderWindow window(sf::VideoMode(sf::Vector2u(1200, 675)), "Grafico");
+  // sf::RenderWindow window(sf::VideoMode(sf::Vector2u(1200, 675)), "Grafico");
   sf::RenderWindow window(sf::VideoMode(1200, 675), "Grafico");
 
   while (window.isOpen()) {
@@ -343,7 +343,7 @@ int main() {
     triangle2.setPosition(sf::Vector2f(11 * window.getSize().x / 512, 0));
     triangle2.setFillColor(sf::Color::Black);
   */
- 
+
     sf::VertexArray trianglex(sf::PrimitiveType::Triangles, 3);
     trianglex[0].position = sf::Vector2f(79 / 80, 59 / 60);
     trianglex[1].position = sf::Vector2f(79 / 80, 119 / 120);

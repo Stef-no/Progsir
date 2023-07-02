@@ -1,14 +1,11 @@
-#include "sir.hpp"
-
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <string>
 
+#include "date.hpp"
 #include "sir_control_print.hpp"
-#include "my_date.hpp"
-
-using namespace epidemic;
+#include "sir_epidemic.hpp"
 
 int main() {
   std::cout << "\nNell'inserimento dei parametri della pandemia si richiede di "
@@ -153,15 +150,15 @@ int main() {
     }
   }
 
-  SirData initial_state{
+  epidemic::SirData initial_state{
       Pop_ - Inf_ - Rec_,
       Inf_,
       Rec_,
   };
 
-  Simulation epidemic{initial_state, Beta_, Gamma_};
+  epidemic::Simulation epidemic{initial_state, Beta_, Gamma_};
 
-  std::vector<SirData> data = epidemic.generate_data(Duration_);
+  std::vector<epidemic::SirData> data = epidemic.generate_data(Duration_);
 
   int d = 0;
 
@@ -193,9 +190,9 @@ int main() {
   auto future_time = std::chrono::system_clock::to_time_t(final_date);
   auto future_tm = std::localtime(&future_time);
 
-  std::stringstream ss;
-  ss << std::put_time(future_tm, "%d-%m-%Y");
-  std::string future_date_str = ss.str();
+  std::stringstream s;
+  s << std::put_time(future_tm, "%d-%m-%Y");
+  std::string future_date_str = s.str();
 
   std::cout << "\nLa simulazione termina il " << future_date_str << "\n\n";
 }
