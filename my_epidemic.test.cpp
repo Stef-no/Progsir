@@ -8,21 +8,25 @@
 #include "my_operator.hpp"
 
 TEST_CASE("Testing struct PandemicData") {
-  epidemic::PandemicData test_pd = {1000, 10, 5, 3, 2, 0, 0.5, 0.8, 0.5};
+  epidemic::PandemicPop test_pop{1000, 10, 5, 3, 2, 0};
+  epidemic::PandemicIndex test_index{0.5, 0.8, 0.5};
+  epidemic::PandemicData test_pd = {test_pop, test_index};
 
-  CHECK(test_pd.Susc == 1000);
-  CHECK(test_pd.Inf == 10);
-  CHECK(test_pd.Dead == 5);
-  CHECK(test_pd.Heal == 3);
-  CHECK(test_pd.Rec == 2);
-  CHECK(test_pd.NewSusc == 0);
-  CHECK(test_pd.Beta == 0.5);
-  CHECK(test_pd.Gamma == 0.8);
-  CHECK(test_pd.DeadIndex == 0.5);
+  CHECK(test_pd.EpidemicPop.Susc == 1000);
+  CHECK(test_pd.EpidemicPop.Inf == 10);
+  CHECK(test_pd.EpidemicPop.Dead == 5);
+  CHECK(test_pd.EpidemicPop.Heal == 3);
+  CHECK(test_pd.EpidemicPop.Rec == 2);
+  CHECK(test_pd.EpidemicPop.NewSusc == 0);
+  CHECK(test_pd.EpidemicIndex.Beta == 0.5);
+  CHECK(test_pd.EpidemicIndex.Gamma == 0.8);
+  CHECK(test_pd.EpidemicIndex.DeadIndex == 0.5);
 }
 
 TEST_CASE("Contagion generate_data returns the expected results") {
-  epidemic::PandemicData initial_state{990, 10, 0, 0, 0, 0, 0.3, 0.05, 0.5};
+  epidemic::PandemicPop initial_pop{990, 10, 0, 0, 0, 0};
+  epidemic::PandemicIndex initial_index{0.3, 0.05, 0.5};
+  epidemic::PandemicData initial_state{initial_pop, initial_index};
   epidemic::VarIndex test_di{'n', 0, 0};
   epidemic::VarIndex test_beta{'n', 0, 0};
   epidemic::VarIndex test_gamma{'n', 0, 0};
@@ -48,7 +52,9 @@ TEST_CASE("Contagion generate_data returns the expected results") {
 }
 
 TEST_CASE("Beta e Gamma test") {
-  epidemic::PandemicData initial_state{10, 10, 0, 0, 0, 0, 1.0, 0.0, 0.0};
+  epidemic::PandemicPop initial_pop{10, 10, 0, 0, 0, 0};
+  epidemic::PandemicIndex initial_index{1.0, 0.0, 0.0};
+  epidemic::PandemicData initial_state{initial_pop, initial_index};
   epidemic::VarIndex test_di{'n', 0, 0};
   epidemic::VarIndex test_beta{'n', 0, 0};
   epidemic::VarIndex test_gamma{'n', 0, 0};

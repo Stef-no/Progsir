@@ -9,16 +9,24 @@
 
 namespace epidemic {
 
-struct PandemicData {
+struct PandemicPop {
   int Susc;          // Popolazione suscettibile
   int Inf;           // Popolazione infetta
   int Dead;          // Popolazione morta
   int Heal;          // Popolazione guarita
   int Rec;           // Popolazione rimossa
   int NewSusc;       // Nuovi suscettibili
+};
+
+struct PandemicIndex {
   double Beta;       // Indice di contagiosità
   double Gamma;      // Indice di rimozione
   double DeadIndex;  // Indice di mortalità
+};
+
+struct PandemicData {
+  PandemicPop EpidemicPop;
+  PandemicIndex EpidemicIndex;
 };
 
 struct VarIndex {

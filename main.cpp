@@ -634,15 +634,14 @@ int main() {
     }
     int NewSusc_ = 0;
 
-    epidemic::PandemicData initial_state{Pop_ - Inf_ - Dead_ - Heal_,
-                                         Inf_,
-                                         Dead_,
-                                         Heal_,
-                                         Dead_ + Heal_,
-                                         NewSusc_,
-                                         Beta_,
-                                         Gamma_,
-                                         DeadIndex_};
+    epidemic::PandemicPop initial_pop{Pop_ - Inf_ - Dead_ - Heal_,
+                                      Inf_,
+                                      Dead_,
+                                      Heal_,
+                                      Dead_ + Heal_,
+                                      NewSusc_};
+    epidemic::PandemicIndex initial_index{Beta_, Gamma_, DeadIndex_};
+    epidemic::PandemicData initial_state{initial_pop, initial_index};
 
     epidemic::VarIndex D_I{DIVar_, DIVarStart_, DIVarTime_};
     epidemic::VarIndex B_eta{bVar_, bVarStart_, bVarTime_};
@@ -677,7 +676,7 @@ int main() {
            "---------------------------"
         << '\n';
 
-    int NewVaxIndex_ = 0;
+    double NewVaxIndex_ = 0.0;
 
     while (d <= Duration_) {
       if (Vax_ == 'Y' || Vax_ == 'y')
@@ -694,9 +693,11 @@ int main() {
         NewVaxIndex_ = 0.0;
       }
 
-      control_print(d, data[d].Susc, data[d].Inf, data[d].Dead, data[d].Heal,
-                    data[d].Rec, data[d].NewSusc, data[d].Beta, data[d].Gamma,
-                    data[d].DeadIndex, NewVaxIndex_, Pop_);
+      control_print(d, data[d].EpidemicPop.Susc, data[d].EpidemicPop.Inf,
+                    data[d].EpidemicPop.Dead, data[d].EpidemicPop.Heal,
+                    data[d].EpidemicPop.Rec, data[d].EpidemicPop.NewSusc,
+                    data[d].EpidemicIndex.Beta, data[d].EpidemicIndex.Gamma,
+                    data[d].EpidemicIndex.DeadIndex, NewVaxIndex_, Pop_);
       d += Interval_;
 
       if (d > Duration_ && d != Duration_ + Interval_) {
@@ -715,11 +716,14 @@ int main() {
           NewVaxIndex_ = 0.0;
         }
 
-        control_print(Duration_, data[Duration_].Susc, data[Duration_].Inf,
-                      data[Duration_].Dead, data[Duration_].Heal,
-                      data[Duration_].Rec, data[Duration_].NewSusc,
-                      data[Duration_].Beta, data[Duration_].Gamma,
-                      data[Duration_].DeadIndex, NewVaxIndex_, Pop_);
+        control_print(
+            Duration_, data[Duration_].EpidemicPop.Susc,
+            data[Duration_].EpidemicPop.Inf, data[Duration_].EpidemicPop.Dead,
+            data[Duration_].EpidemicPop.Heal, data[Duration_].EpidemicPop.Rec,
+            data[Duration_].EpidemicPop.NewSusc,
+            data[Duration_].EpidemicIndex.Beta,
+            data[Duration_].EpidemicIndex.Gamma,
+            data[Duration_].EpidemicIndex.DeadIndex, NewVaxIndex_, Pop_);
       }
     }
 
